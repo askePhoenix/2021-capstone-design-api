@@ -18,10 +18,6 @@ import java.util.HashMap;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/sign-on")
-    public HashMap<String, Object> signOnUser(){
-        return null;
-    }
 
     @PostMapping(value = "")
     public HashMap<String, Object> signup(UserInfoDto infoDto) {
