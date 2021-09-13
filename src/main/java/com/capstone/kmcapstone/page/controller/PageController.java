@@ -10,17 +10,17 @@ public class PageController {
         return "login";
     }
 
-    @GetMapping("main")
+    @GetMapping("/main")
     public String mainPage() {
         return "main";
     }
 
-    @GetMapping("sign-on")
+    @GetMapping("/sign-on")
     public String signOnPage() {
         return "sign-on";
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     public String rootPage() {
         return "redirect:main";
     }
