@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/api/user")
 public class UserController {
     private final UserService userService;
 
