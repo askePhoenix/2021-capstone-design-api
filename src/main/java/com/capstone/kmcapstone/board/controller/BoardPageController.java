@@ -21,7 +21,10 @@ public class BoardPageController {
             @PathVariable Long board
     ){
         model.setViewName("/board/detail/board_detail");
-        model.addObject("message", "프로그래밍 언어를 입력하세요");
+        model.addObject("title", "");
+        model.addObject("contents", "");
+        model.addObject("writer", "");
+        model.addObject("message", "");
         return model;
     }
 }
