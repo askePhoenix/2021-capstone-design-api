@@ -20,7 +20,7 @@ public class BoardPageController {
             ModelAndView model,
             @PathVariable Long board
     ){
-        model.setViewName("/board/detail/board_detail");
+        model.setViewName("board/detail/board_detail");
         model.addObject("title", "제목입니다.");
         model.addObject("contents", "내용입니다.");
         model.addObject("writer", "작성자 성명입니다.");
