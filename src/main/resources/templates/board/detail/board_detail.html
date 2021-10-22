@@ -1,104 +1,35 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layouts/layout}"
 >
-<head>
-
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="description" content=""/>
-    <meta name="author" content=""/>
-
-    <title>Board Detail</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
-
-    <!-- Custom CSS -->
-    <style>
-        body {
-            padding-top: 50px;
-        }
-
-        .starter-template {
-            padding: 40px 15px;
-            text-align: center;
-        }
-    </style>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
-
-<!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<!-- index.html 고유 CSS 추가 -->
+<th:block layout:fragment="css"> </th:block>
+<!-- index.html 고유 스크립트 추가 -->
+<th:block layout:fragment="script"> </th:block>
+<div layout:fragment="content">
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Project name</a>
+        <div class="row">
         </div>
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
-        <!--/.nav-collapse -->
+        <!-- /.row -->
+        <!--  여기에 내용 넣기  -->
+        <table class="table">
+            <tbody>
+            <tr>
+                <td th:text="${title}"></td>
+            </tr>
+            <tr>
+                <td th:text="${writer}"></td>
+            </tr>
+            <tr>
+                <td th:text="${message}"></td>
+            </tr>
+            <tr>
+                <td th:text="${contents}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-    <!-- /.container -->
-</nav>
-
-
-<!-- Page Content -->
-<div class="container">
-    <div class="row">
-        <div class="starter-template">
-            <h1>게시판 상세 페이지</h1>
-
-            <p class="lead">Complete with pre-defined CDN paths!</p>
-
-            <p><a href="http://getbootstrap.com/getting-started/">http://getbootstrap.com/getting-started/</a></p>
-        </div>
-    </div>
-    <!-- /.row -->
-
-
-
-<!--  여기에 내용 넣기  -->
-    <table class="table">
-        <tbody>
-        <tr>
-            <td th:text="${title}"></td>
-        </tr>
-        <tr>
-            <td th:text="${writer}"></td>
-        </tr>
-        <tr>
-            <td th:text="${message}"></td>
-        </tr>
-        <tr>
-            <td th:text="${contents}"></td>
-        </tr>
-        </tbody>
-    </table>
-
 </div>
-<!-- /.container -->
-<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-</body>
 </html>

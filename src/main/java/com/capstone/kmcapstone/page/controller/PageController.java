@@ -11,5 +11,7 @@ public class PageController {
         return "redirect:main";
     }
 
+    @GetMapping("/base")
+    public String basePage(){ return "base"; }
 
 }
