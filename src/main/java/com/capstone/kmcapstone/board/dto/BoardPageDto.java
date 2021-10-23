@@ -12,12 +12,10 @@ import javax.persistence.ManyToOne;
 @Getter
 @Setter
 public class BoardPageDto {
+    // 게시판 정보를 가져오는 DTO 입니다.
     private Long id;
-
     private UserInfo writer;
     private String title;
-
     private String contents;
-
-    private boolean isDeleted;
+    private boolean is_deleted;
 }
