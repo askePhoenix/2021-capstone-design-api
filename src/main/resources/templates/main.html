@@ -14,6 +14,7 @@
         <div class="row">
 
             <h2>회원 전용 페이지</h2>
+            닉네임 : <span th:text="${nick_name}"></span> <br>
             ID : <span sec:authentication="name"></span> <br>
             소유 권한 : <span sec:authentication="authorities"></span> <br>
 

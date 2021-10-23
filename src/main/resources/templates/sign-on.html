@@ -127,6 +127,12 @@
                 <input type="hidden" name="auth" value="ROLE_USER">
                 <div class="card-body">
                     <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-signature" style="font-size: 20px"></i></span>
+                        </div>
+                        <input type="text" style="font-size: 30px; height: 45px;" name="nick_name" class="form-control">
+                    </div>
+                    <div class="input-group form-group">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user" style="font-size: 20px"></i></span>

@@ -24,8 +24,8 @@ public class UserInfo implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "nick_name")
+    private String nick_name;
 
     @Column(name = "email")
     private String email;
@@ -37,10 +37,12 @@ public class UserInfo implements UserDetails {
     private String auth;
 
     @Builder
-    public UserInfo(String email, String password, String auth) {
+    public UserInfo(String email, String password, String auth,
+                    String nick_name) {
         this.email = email;
         this.password = password;
         this.auth = auth;
+        this.nick_name = nick_name;
     }
 
     @Override
