@@ -5,4 +5,6 @@ import com.capstone.kmcapstone.user.model.UserInfo;
 
 public interface BoardPageService {
     Long createBoardDetail(BoardPageDto dto, UserInfo info);
+
+    BoardPageDto loadBoardDetail(Long id);
 }
