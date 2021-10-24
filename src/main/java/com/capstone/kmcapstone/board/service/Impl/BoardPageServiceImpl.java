@@ -26,4 +26,12 @@ public class BoardPageServiceImpl implements BoardPageService {
         );
         return boardPageInfo.getId();
     }
+
+    @Override
+    public BoardPageDto loadBoardDetail(Long id){
+        return new BoardPageDto(repository.searchById(id).
+                orElseGet(
+                () -> BoardPageInfo.builder().id(-1L).build()
+        ));
+    }
 }

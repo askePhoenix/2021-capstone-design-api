@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/api/boards")
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardPageService service;
@@ -25,9 +25,9 @@ public class BoardController {
     public HashMap<String, Object> createBoardDetail(
             BoardPageDto dto, @LoginUser UserInfo info
             ){
-        Long id = service.createBoardDetail(dto, info);
+
         return Maps.newHashMap(ImmutableMap.of(
-                "id", id
+                "id", service.createBoardDetail(dto, info)
         ));
     }
 }

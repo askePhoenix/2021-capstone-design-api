@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layouts/layout}"
+>
+<!-- index.html 고유 CSS 추가 -->
+<th:block layout:fragment="css"> </th:block>
+<!-- index.html 고유 스크립트 추가 -->
+<th:block layout:fragment="script">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        function ajax_board_post(csrf) {
+            const params = {
+                title: $("#title").val()
+                , contents: $("#contents").val()
+                , _csrf: $("#_csrf").val()
+            }
+
+            $.ajax({
+                type: "POST",            // HTTP method type(GET, POST) 형식이다.
+                url: "/api/boards",      // 컨트롤러에서 대기중인 URL 주소이다.
+                data: params,            // Json 형식의 데이터이다.
+                success: function (res) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+                    // 응답코드 > 0000
+                    // alert(res.code);
+                    const id = res.id
+                    location.href = "/boards/" + id
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+                    alert("통신 실패.")
+                }
+            })
+        }
+    </script>
+</th:block>
+<div layout:fragment="content">
+    <input type="hidden" th:id="${_csrf.parameterName}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <div class="container">
+        <div class="row">
+        </div>
+        <!-- /.row -->
+        <!--  여기에 내용 넣기  -->
+        <br/>
+        <br/>
+        <br/>
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요.">
+        </div>
+        <div class="form-group">
+            <label for="writer">작성자</label>
+            <input type="text" class="form-control" id="writer" name="writer" readonly th:value="${writer}">
+        </div>
+        <div class="form-group">
+            <label for="contents">내용</label>
+            <textarea class="form-control" id="contents" name="contents" rows="20"></textarea>
+        </div>
+        <button class="btn btn-primary" th:onclick="ajax_board_post()">작성</button>
+    </div>
+</div>
+</html>

@@ -1,16 +1,14 @@
 package com.capstone.kmcapstone.board.dto;
 
+import com.capstone.kmcapstone.board.model.BoardPageInfo;
 import com.capstone.kmcapstone.user.model.UserInfo;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class BoardPageDto {
     // 게시판 정보를 가져오는 DTO 입니다.
     private Long id;
@@ -18,4 +16,14 @@ public class BoardPageDto {
     private String title;
     private String contents;
     private boolean is_deleted;
+
+    private String writer_name;
+
+    public BoardPageDto(BoardPageInfo searchById) {
+        this.id = searchById.getId();
+        this.title = searchById.getTitle();
+        this.writer_name = searchById.getWriter() == null
+                ? "empty" : searchById.getWriter().getNick_name();
+        this.contents = searchById.getContents();
+    }
 }
