@@ -2,6 +2,7 @@ package com.capstone.kmcapstone.board.model;
 
 import com.capstone.kmcapstone.user.model.UserInfo;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,4 +32,12 @@ public class BoardViewLogInfo {
     @CreationTimestamp
     @Column(name = "create_time")
     private LocalDateTime createDateTime;
+
+    @Builder
+    public BoardViewLogInfo(Long id, UserInfo visitant, BoardPageInfo target_board, LocalDateTime createDateTime) {
+        this.id = id;
+        this.visitant = visitant;
+        this.target_board = target_board;
+        this.createDateTime = createDateTime;
+    }
 }

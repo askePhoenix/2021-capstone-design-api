@@ -20,12 +20,19 @@ public class BoardTableViewDto {
     private Integer viewer_count;
 
 
-    public BoardTableViewDto(BoardPageInfo info, Integer recommend_count, Integer viewer_count){
+    public BoardTableViewDto(BoardPageInfo info, Integer recommend_count, Integer viewer_count) {
         this.id = info.getId();
         this.title = info.getTitle();
         this.user_name = info.getWriter().getNick_name();
         this.contents = info.getContents();
         this.recommend_count = recommend_count;
         this.viewer_count = viewer_count;
+    }
+
+    public BoardTableViewDto(BoardPageInfo info) {
+        this.id = info.getId();
+        this.title = info.getTitle();
+        this.user_name = info.getWriter().getNick_name();
+        this.contents = info.getContents();
     }
 }
