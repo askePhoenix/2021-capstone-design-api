@@ -5,11 +5,95 @@
       layout:decorator="~{layouts/layout}"
 >
 <!-- index.html 고유 CSS 추가 -->
-<th:block layout:fragment="css"> </th:block>
+<th:block layout:fragment="css"></th:block>
 <!-- index.html 고유 스크립트 추가 -->
-<th:block layout:fragment="script"> </th:block>
+<th:block layout:fragment="script">
+    <!--  제이쿼리  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        function paging_5(res, page) {
+            const totalPages = res["totalPages"];
+            const paging_col = 5;
+            const first_page = Math.floor((page - 1) / paging_col) * paging_col + 1;
+            const last_page = Math.floor((page - 1) / paging_col) * paging_col + 5 > totalPages ? totalPages
+                : Math.floor((page - 1) / paging_col) * paging_col + 5;
+            const next_page = Math.floor((page - 1) / paging_col) * paging_col + 6 > totalPages ? totalPages
+                : Math.floor((page - 1) / paging_col) * paging_col + 6;
+            const post_page = Math.floor((page - 1) / paging_col) * paging_col - 4 < 1 ? 1
+                : Math.floor((page - 1) / paging_col) * paging_col - 4;
+
+            let paging = "";
+
+            if (page !== 1) paging += '<li class="page-item" onclick="getTable(1)"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>';
+            if (first_page > 1) paging += '<li class="page-item" onclick="getTable(' + post_page + ')"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&lt;</span><span class="sr-only">Previous</span></a></li>';
+
+            for (let page_A = first_page; page_A <= last_page; page_A++) {
+                const activate = page === page_A ? ' active' : '';
+                paging += '<li class="page-item' + activate + '" onClick="getTable(' + page_A + ')"><a class="page-link" href="#">' + page_A + '</a></li>';
+            }
+
+            if (last_page < totalPages) paging += '<li class="page-item" onclick="getTable(' + next_page + ')"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&gt;</span><span class="sr-only">Next</span></a></li>';
+            if (page !== totalPages) paging += '<li class="page-item" onclick="getTable(' + totalPages + ')"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>';
+
+
+            $("#paging_only").html(paging);
+        }
+
+        function table_view(res) {
+            let view = '';
+
+            const content = res.content;
+
+            const recommend_count = res["recommends"];
+            const viewer_count = res["views"];
+
+            for (let i = 0; i < content.length; i++) {
+                view += '<tr style="cursor:pointer;" onclick="location.href = \'/boards/' + content[i]["id"] + '\' "><th scope="row" hidden>' + content[i]["id"] + '</th>'
+                view += '<td>' + content[i]["title"] + '</td>'
+                view += '<td>' + content[i]["user_name"] + '</td>'
+                view += '<td>' + recommend_count[i]["count"] + '</td>'
+                view += '<td>' + viewer_count[i]["count"] + '</td>'
+                view += '<td>' + content[i]["create_time"] + '</td>'
+                view += '</tr>'
+            }
+            $("#table_view").html(view);
+        }
+
+        function getTable(page) {
+            const params = {
+                page: page - 1
+                , size: $("#size").val()
+                , _csrf: $("#_csrf").val()
+            }
+
+            $.ajax({
+                type: "GET",            // HTTP method type(GET, POST) 형식이다.
+                url: "/api/boards",      // 컨트롤러에서 대기중인 URL 주소이다.
+                data: params,            // Json 형식의 데이터이다.
+                success: function (res) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+                    // 응답코드 > 0000
+                    // alert(res.code);
+                    paging_5(res, page);
+                    table_view(res);
+                },
+                error: function () { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+                    alert("통신 실패.")
+                }
+            })
+        }
+    </script>
+
+    <script>
+        function goWrite() {
+            location.href = "/boards/write";
+        }
+    </script>
+</th:block>
 <div layout:fragment="content">
     <div class="container">
+        <input type="hidden" value="10" id="size">
+        <input type="hidden" id="total" th:value="${table_view.getTotalPages()}"/>
         <div class="row">
             <table class="table table-dark">
                 <thead>
@@ -22,30 +106,17 @@
                     <th scope="col">날짜</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <th scope="row" hidden>1</th>
-                    <td>C언어 커리큘럼은 어떻게 되나요?</td>
-                    <td>해리포터</td>
-                    <td>3</td>
-                    <td>29</td>
-                    <td>2 시간 전</td>
-                </tr>
-                <tr>
-                    <th scope="row" hidden>2</th>
-                    <td>Eclipse vs Intellij idea</td>
-                    <td>개발초보</td>
-                    <td>5</td>
-                    <td>54</td>
-                    <td>3 일 전</td>
-                </tr>
-                <tr>
-                    <th scope="row" hidden>3</th>
-                    <td>공지사항(필독)</td>
-                    <td>askePhoenix</td>
-                    <td>33</td>
-                    <td>333</td>
-                    <td>2021.09.15</td>
+                <tbody id="table_view">
+                <tr th:each="item, num : ${table_view.getContent()}"
+                    style="cursor:pointer;"
+                    th:attr="onclick='location.href=\'/boards/' + ${item.getId()} + '\''"
+                    th:href="@{|/api/boards/${item.getId()}|}">
+                    <td th:text="${item.getId()}" hidden></td>
+                    <td th:text="${item.getTitle()}"></td>
+                    <td th:text="${item.getUser_name()}"></td>
+                    <td th:text="${table_view.getRecommends()[num.index].getCount()}"></td>
+                    <td th:text="${table_view.getViews()[num.index].getCount()}"></td>
+                    <td th:text="${item.getCreate_time()}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -54,18 +125,38 @@
             <div class="col">
                 <div class="col-md-8">
                     <nav aria-label="Page navigation example" style="display: inline-block">
-                        <ul class="pagination" style="margin: 0">
-                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        <ul class="pagination" style="margin: 0" id="paging_only">
+                            <li th:if="${table_view.getTotalPages() > 0}" class="page-item active"
+                                onClick="getTable(1)"><a class="page-link" href="#">1</a></li>
+                            <li th:if="${table_view.getTotalPages() > 1}" class="page-item" onClick="getTable(2)"><a
+                                    class="page-link" href="#">2</a></li>
+                            <li th:if="${table_view.getTotalPages() > 2}" class="page-item" onClick="getTable(3)"><a
+                                    class="page-link" href="#">3</a></li>
+                            <li th:if="${table_view.getTotalPages() > 3}" class="page-item" onClick="getTable(4)"><a
+                                    class="page-link" href="#">4</a></li>
+                            <li th:if="${table_view.getTotalPages() > 4}" class="page-item" onClick="getTable(5)"><a
+                                    class="page-link" href="#">5</a></li>
+                            <li th:if="${table_view.getTotalPages() > 4}" class="page-item" onClick="getTable(5)"><a
+                                    class="page-link" href="#">5</a></li>
+                            <li th:if="${table_view.getTotalPages() > 5}" class="page-item" onclick="getTable(6)">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&gt;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                            <li th:if="${table_view.getTotalPages() > 1}" class="page-item"
+                                th:attr="onclick='getTable(\'' + ${table_view.getTotalPages()} + '\')'">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
                 <div class="col-6 col-md-4 align-self-center">
                     <button type="button" class="btn btn-dark" style="display: inline-block"
-                            onclick="">글 작성하기
+                            onclick="goWrite()">글 작성하기
                     </button>
                 </div>
             </div>
