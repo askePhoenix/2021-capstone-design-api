@@ -5,9 +5,20 @@
       layout:decorator="~{layouts/layout}"
 >
 <!-- index.html 고유 CSS 추가 -->
-<th:block layout:fragment="css"> </th:block>
+<th:block layout:fragment="css"></th:block>
 <!-- index.html 고유 스크립트 추가 -->
-<th:block layout:fragment="script"> </th:block>
+<th:block layout:fragment="script">
+<!--  제이쿼리  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<!--  추천하기  -->
+    <script>
+        function giveRecommend() {
+
+        }
+    </script>
+
+</th:block>
 <div layout:fragment="content">
     <div class="container">
         <div class="row">
@@ -17,19 +28,48 @@
         <table class="table">
             <tbody>
             <tr>
+                <td th:text="제목" style="width: 100px"></td>
                 <td th:text="${title}"></td>
             </tr>
             <tr>
+                <td th:text="조회수"></td>
+                <td id="view_count" th:text="조회수"></td>
+            </tr>
+            <tr>
+                <td th:text="추천수"></td>
+                <td id="recommend" th:text="추천수"></td>
+            </tr>
+
+            <tr>
+                <td th:text="작성자"></td>
                 <td th:text="${writer}"></td>
             </tr>
             <tr>
+                <td th:text="메시지"></td>
                 <td th:text="${message}"></td>
             </tr>
             <tr>
+                <td th:text="내용"></td>
                 <td th:text="${contents}"></td>
             </tr>
+
             </tbody>
         </table>
     </div>
+    <div class="row">
+        <div class="col-md-8 align-self-center">
+            <button type="button" class="btn btn-dark"
+                    onclick="">글 작성하기
+            </button>
+        </div>
+        <div class="col">
+            <div class="col-6 col-md-4 align-self-center">
+                <button type="button" class="btn btn-dark"
+                        onclick="">글 추천하기
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
 </html>
