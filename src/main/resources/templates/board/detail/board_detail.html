@@ -15,12 +15,14 @@
     <script>
         function giveRecommend() {
             const id = $("#id").val();
-
+            const params = {
+                _csrf: $("#_csrf").val()
+            }
             $.ajax({
                 type: "POST",            // HTTP method type(GET, POST) 형식이다.
                 url: "/api/boards/" + id + "/recommend",      // 컨트롤러에서 대기중인 URL 주소이다.
+                data: params,            // Json 형식의 데이터이다.
                 success: function (res) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-                    const id = res.id
                     $("#recommend").text(res.count);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
@@ -37,6 +39,7 @@
 <div layout:fragment="content">
     <div class="container">
         <input type="hidden" th:id="id" th:value="${id}"/>
+        <input type="hidden" th:id="${_csrf.parameterName}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <!-- /.row -->
         <!--  여기에 내용 넣기  -->
         <table class="table">
@@ -51,7 +54,7 @@
             </tr>
             <tr>
                 <td th:text="추천수"></td>
-                <td id="recommend" th:text="추천수"></td>
+                <td id="recommend" th:text="${recommend_count}"></td>
             </tr>
 
             <tr>

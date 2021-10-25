@@ -22,10 +22,16 @@ public class RecommendBoardServiceImpl implements RecommendBoardService {
             BoardPageInfo boardPageInfo = boardDetailRepository.searchById(target).orElseThrow(
                     NullPointerException::new
             );
+            final RecommendBoardInfo duple = repository.searchTargetAndUser(boardPageInfo, userInfo).orElseGet(
+                    () -> RecommendBoardInfo.builder()
+                            .id(-1L)
+                            .build() );
             repository.save(
                     RecommendBoardInfo.builder()
+                            .id( duple.getId() == -1L ? null : duple.getId() )
                             .give_user(userInfo)
                             .target_board(boardPageInfo)
+                            .createDateTime(duple.getId() == -1L ? null : duple.getCreateDateTime())
                             .build()
             );
             return repository.CountAllTargetBoard(boardPageInfo);

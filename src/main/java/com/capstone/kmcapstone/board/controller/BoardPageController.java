@@ -4,6 +4,7 @@ import com.capstone.kmcapstone.annotation.LoginUser;
 import com.capstone.kmcapstone.board.dto.BoardPageDto;
 import com.capstone.kmcapstone.board.service.BoardPageService;
 import com.capstone.kmcapstone.board.service.BoardViewLogService;
+import com.capstone.kmcapstone.board.service.RecommendBoardService;
 import com.capstone.kmcapstone.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class BoardPageController {
     private final BoardPageService service;
     private final BoardViewLogService viewLogService;
+    private final RecommendBoardService recommendBoardService;
 
     // 게시판 리스트 html 가져오기
     @GetMapping("")
@@ -41,6 +43,7 @@ public class BoardPageController {
             model.addObject("contents", "존재하지 않는 게시글입니다.");
             model.addObject("writer", "존재하지 않는 게시글입니다.");
             model.addObject("message", "404-not found");
+            model.addObject("recommend_count", 0);
             model.addObject("id", board);
         } else {
             // 조회수 증가
@@ -51,6 +54,7 @@ public class BoardPageController {
             model.addObject("writer", dto.getWriter_name());
             model.addObject("message", "message");
             model.addObject("id", board);
+            model.addObject("recommend_count", recommendBoardService.loadRecommend(board));
             // 조회수 가져오기
             model.addObject("view_count", viewLogService.getLogsCount(board));
 
