@@ -49,7 +49,7 @@
             const viewer_count = res["views"];
 
             for (let i = 0; i < content.length; i++) {
-                view += '<tr><th scope="row" hidden>' + content[i]["id"] + '</th>'
+                view += '<tr style="cursor:pointer;" onclick="location.href = \'/boards/' + content[i]["id"] + '\' "><th scope="row" hidden>' + content[i]["id"] + '</th>'
                 view += '<td>' + content[i]["title"] + '</td>'
                 view += '<td>' + content[i]["user_name"] + '</td>'
                 view += '<td>' + recommend_count[i]["count"] + '</td>'
@@ -108,9 +108,8 @@
                 </thead>
                 <tbody id="table_view">
                 <tr th:each="item, num : ${table_view.getContent()}"
-                    style = "cursor:pointer;"
+                    style="cursor:pointer;"
                     th:attr="onclick='location.href=\'/boards/' + ${item.getId()} + '\''"
-
                     th:href="@{|/api/boards/${item.getId()}|}">
                     <td th:text="${item.getId()}" hidden></td>
                     <td th:text="${item.getTitle()}"></td>
@@ -145,7 +144,8 @@
                                     <span class="sr-only">Next</span>
                                 </a>
                             </li>
-                            <li th:if="${table_view.getTotalPages() > 1}" class="page-item" th:attr="onclick='getTable(\'' + ${table_view.getTotalPages()} + '\')'">
+                            <li th:if="${table_view.getTotalPages() > 1}" class="page-item"
+                                th:attr="onclick='getTable(\'' + ${table_view.getTotalPages()} + '\')'">
                                 <a class="page-link" href="#" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                     <span class="sr-only">Next</span>
