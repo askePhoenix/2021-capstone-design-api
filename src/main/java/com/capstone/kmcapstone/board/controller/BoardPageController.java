@@ -41,6 +41,7 @@ public class BoardPageController {
             model.addObject("contents", "존재하지 않는 게시글입니다.");
             model.addObject("writer", "존재하지 않는 게시글입니다.");
             model.addObject("message", "404-not found");
+            model.addObject("id", board);
         } else {
             // 조회수 증가
             viewLogService.createLogs(board, userInfo);
@@ -49,6 +50,7 @@ public class BoardPageController {
             model.addObject("contents", dto.getContents());
             model.addObject("writer", dto.getWriter_name());
             model.addObject("message", "message");
+            model.addObject("id", board);
             // 조회수 가져오기
             model.addObject("view_count", viewLogService.getLogsCount(board));
 

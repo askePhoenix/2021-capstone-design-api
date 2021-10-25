@@ -14,7 +14,19 @@
 <!--  추천하기  -->
     <script>
         function giveRecommend() {
+            const id = $("#id").val();
 
+            $.ajax({
+                type: "POST",            // HTTP method type(GET, POST) 형식이다.
+                url: "/api/boards/" + id + "/recommend",      // 컨트롤러에서 대기중인 URL 주소이다.
+                success: function (res) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+                    const id = res.id
+                    $("#recommend").text(res.count);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+                    alert("통신 실패.")
+                }
+            })
         }
         function goWrite() {
             location.href = "/boards/write";
@@ -24,8 +36,7 @@
 </th:block>
 <div layout:fragment="content">
     <div class="container">
-        <div class="row">
-        </div>
+        <input type="hidden" th:id="id" th:value="${id}"/>
         <!-- /.row -->
         <!--  여기에 내용 넣기  -->
         <table class="table">
@@ -65,7 +76,7 @@
         <div class="col">
             <div class="col-6 col-md-4 align-self-center">
                 <button type="button" class="btn btn-dark"
-                        onclick="">글 추천하기
+                        onclick="giveRecommend()">글 추천하기
                 </button>
                 <button type="button" class="btn btn-dark"
                         onclick="goWrite()">글 작성하기
