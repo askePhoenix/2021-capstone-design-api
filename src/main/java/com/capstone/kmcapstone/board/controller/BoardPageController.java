@@ -23,9 +23,13 @@ public class BoardPageController {
 
     // 게시판 리스트 html 가져오기
     @GetMapping("")
-    public String getBoard() {
+    public ModelAndView getBoard(
+            ModelAndView model
+    ) {
+        model.setViewName("/board/board");
+        model.addObject("table_view", service.getPage(0,10) );
 
-        return "/board/board";
+        return model;
     }
 
     // 게시판 상세보기

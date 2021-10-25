@@ -93,6 +93,7 @@
 <div layout:fragment="content">
     <div class="container">
         <input type="hidden" value="10" id="size">
+        <input type="hidden" id="total" th:value="${table_view.getTotalPages()}"/>
         <div class="row">
             <table class="table table-dark">
                 <thead>
@@ -106,29 +107,17 @@
                 </tr>
                 </thead>
                 <tbody id="table_view">
-                <tr>
-                    <th scope="row" hidden>1</th>
-                    <td>C언어 커리큘럼은 어떻게 되나요?</td>
-                    <td>해리포터</td>
-                    <td>3</td>
-                    <td>29</td>
-                    <td>2 시간 전</td>
-                </tr>
-                <tr>
-                    <th scope="row" hidden>2</th>
-                    <td>Eclipse vs Intellij idea</td>
-                    <td>개발초보</td>
-                    <td>5</td>
-                    <td>54</td>
-                    <td>3 일 전</td>
-                </tr>
-                <tr>
-                    <th scope="row" hidden>3</th>
-                    <td>공지사항(필독)</td>
-                    <td>askePhoenix</td>
-                    <td>33</td>
-                    <td>333</td>
-                    <td>2021.09.15</td>
+                <tr th:each="item, num : ${table_view.getContent()}"
+                    style = "cursor:pointer;"
+                    th:attr="onclick='location.href=\'/boards/' + ${item.getId()} + '\''"
+
+                    th:href="@{|/api/boards/${item.getId()}|}">
+                    <td th:text="${item.getId()}" hidden></td>
+                    <td th:text="${item.getTitle()}"></td>
+                    <td th:text="${item.getUser_name()}"></td>
+                    <td th:text="${table_view.getRecommends()[num.index].getCount()}"></td>
+                    <td th:text="${table_view.getViews()[num.index].getCount()}"></td>
+                    <td th:text="${item.getCreate_time()}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -138,11 +127,30 @@
                 <div class="col-md-8">
                     <nav aria-label="Page navigation example" style="display: inline-block">
                         <ul class="pagination" style="margin: 0" id="paging_only">
-                            <li class="page-item" onclick="getTable(1)"><a class="page-link" href="#">Previous</a></li>
-                            <li class="page-item" onclick="getTable(1)"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item" onclick="getTable(1)"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item" onclick="getTable(1)"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item" onclick="getTable(1)"><a class="page-link" href="#">Next</a></li>
+                            <li th:if="${table_view.getTotalPages() > 0}" class="page-item active"
+                                onClick="getTable(1)"><a class="page-link" href="#">1</a></li>
+                            <li th:if="${table_view.getTotalPages() > 1}" class="page-item" onClick="getTable(2)"><a
+                                    class="page-link" href="#">2</a></li>
+                            <li th:if="${table_view.getTotalPages() > 2}" class="page-item" onClick="getTable(3)"><a
+                                    class="page-link" href="#">3</a></li>
+                            <li th:if="${table_view.getTotalPages() > 3}" class="page-item" onClick="getTable(4)"><a
+                                    class="page-link" href="#">4</a></li>
+                            <li th:if="${table_view.getTotalPages() > 4}" class="page-item" onClick="getTable(5)"><a
+                                    class="page-link" href="#">5</a></li>
+                            <li th:if="${table_view.getTotalPages() > 4}" class="page-item" onClick="getTable(5)"><a
+                                    class="page-link" href="#">5</a></li>
+                            <li th:if="${table_view.getTotalPages() > 5}" class="page-item" onclick="getTable(6)">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&gt;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                            <li th:if="${table_view.getTotalPages() > 1}" class="page-item" th:attr="onclick='getTable(\'' + ${table_view.getTotalPages()} + '\')'">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
