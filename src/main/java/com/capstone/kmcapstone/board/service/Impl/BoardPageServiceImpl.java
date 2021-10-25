@@ -23,6 +23,9 @@ public class BoardPageServiceImpl implements BoardPageService {
 
     @Override
     public Long createBoardDetail(BoardPageDto dto, UserInfo info) {
+        if(info == null){
+            return -1L;
+        }
         BoardPageInfo boardPageInfo = repository.save(
                 BoardPageInfo.builder()
                         .title(dto.getTitle())

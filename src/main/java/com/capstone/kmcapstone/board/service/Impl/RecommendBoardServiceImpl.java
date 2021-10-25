@@ -30,7 +30,7 @@ public class RecommendBoardServiceImpl implements RecommendBoardService {
             );
             return repository.CountAllTargetBoard(boardPageInfo);
         } catch (NullPointerException e) {
-            return -1;
+            return 0;
         }
     }
 
@@ -43,7 +43,7 @@ public class RecommendBoardServiceImpl implements RecommendBoardService {
             );
             return repository.CountAllTargetBoard(boardPageInfo);
         } catch (NullPointerException e) {
-            return -1;
+            return 0;
         }
     }
 

@@ -16,6 +16,9 @@
         function giveRecommend() {
 
         }
+        function goWrite() {
+            location.href = "/boards/write";
+        }
     </script>
 
 </th:block>
@@ -58,14 +61,14 @@
     </div>
     <div class="row">
         <div class="col-md-8 align-self-center">
-            <button type="button" class="btn btn-dark"
-                    onclick="">글 작성하기
-            </button>
         </div>
         <div class="col">
             <div class="col-6 col-md-4 align-self-center">
                 <button type="button" class="btn btn-dark"
                         onclick="">글 추천하기
+                </button>
+                <button type="button" class="btn btn-dark"
+                        onclick="goWrite()">글 작성하기
                 </button>
             </div>
         </div>
