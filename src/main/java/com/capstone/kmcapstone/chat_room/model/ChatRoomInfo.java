@@ -27,6 +27,11 @@ public class ChatRoomInfo {
     @ManyToOne
     private BoardPageInfo target_board;
 
+    // 방장
+    @JoinColumn(name = "owner")
+    @ManyToOne
+    private UserInfo owner;
+
     // 방 제목
     @Column(name = "title")
     private String title;

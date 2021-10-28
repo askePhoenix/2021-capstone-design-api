@@ -3,7 +3,6 @@ package com.capstone.kmcapstone.chat_room.controller;
 import com.capstone.kmcapstone.annotation.LoginUser;
 import com.capstone.kmcapstone.chat_room.dto.member.ChatMemberDto;
 import com.capstone.kmcapstone.chat_room.dto.search.ChatRoomDto;
-import com.capstone.kmcapstone.chat_room.repository.ChatRoomRepository;
 import com.capstone.kmcapstone.chat_room.service.ChatRoomService;
 import com.capstone.kmcapstone.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ public class ChatRoomController {
             @LoginUser UserInfo userInfo,
             @PathVariable Long board) {
 
-        // 채팅방 제목에는 특수문자 [/] 제외해야 합니다.
+        // 채팅방 제목에는 특수문자 [/] 제외해야 합니다. (html ajax 에서 처리 할 것)
         return null;
     }
 
@@ -61,7 +60,17 @@ public class ChatRoomController {
         return null;
     }
 
+    // 방장으로 채팅방 찾기
+    @GetMapping("chats/owners/{owner}")
+    public List<ChatRoomDto> searchOwnerRoom(
+            @PathVariable Long owner
+    ) {
+        return service.getMineRoom(owner);
+    }
 
-    // 해당 게시판 연동
-
+    // 본인의 채팅방 찾기
+    @GetMapping("chats/mine")
+    public List<ChatRoomDto> loadMineRoom(@LoginUser UserInfo userInfo) {
+        return service.getMineRoom(userInfo.getId());
+    }
 }
