@@ -5,6 +5,7 @@ import com.capstone.kmcapstone.user.model.UserInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Session;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -22,15 +23,22 @@ public class ChatMemberInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 해당 채팅방
+    // 기준 채팅방
     @ManyToOne
     @JoinColumn(name = "in_room")
     private ChatRoomInfo in_room;
+
+    // 채팅방 제목
+    @Column(name = "title")
+    private String title;
 
     // 채팅방 유저(참여자)
     @ManyToOne
     @JoinColumn(name = "member")
     private UserInfo member;
+
+    @Column(name = "session")
+    private Session session;
 
     // 방에 있는지 여부
     @Column(name = "is_deleted")

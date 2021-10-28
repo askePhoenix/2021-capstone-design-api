@@ -1,5 +1,6 @@
 package com.capstone.kmcapstone.chat_room.model;
 
+import com.capstone.kmcapstone.board.model.BoardPageInfo;
 import com.capstone.kmcapstone.user.model.UserInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,10 +22,10 @@ public class ChatRoomInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 방장
-    @JoinColumn(name = "owner")
+    // 방 기준 게시글
+    @JoinColumn(name = "owner_board")
     @ManyToOne
-    private UserInfo owner;
+    private BoardPageInfo owner_board;
 
     // 방 제목
     @Column(name = "title")
