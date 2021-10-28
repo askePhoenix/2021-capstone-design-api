@@ -4,6 +4,7 @@ import com.capstone.kmcapstone.annotation.LoginUser;
 import com.capstone.kmcapstone.chat_room.dto.member.ChatMemberDto;
 import com.capstone.kmcapstone.chat_room.dto.search.ChatRoomDto;
 import com.capstone.kmcapstone.chat_room.repository.ChatRoomRepository;
+import com.capstone.kmcapstone.chat_room.service.ChatRoomService;
 import com.capstone.kmcapstone.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/boards/")
 public class ChatRoomController {
-    private final ChatRoomRepository repository;
+    private final ChatRoomService service;
 
     // 채팅방 만들기
     @PostMapping("{board}/chats")
@@ -28,18 +29,18 @@ public class ChatRoomController {
 
     // 채팅방 정보 가져오기
     @GetMapping("{board}/chats")
-    public ChatRoomDto loadChatRoom(
+    public List<ChatRoomDto> loadChatRoom(
             @PathVariable Long board) {
-        return null;
+        return service.getChatRoom(board);
     }
 
     // 채팅방 멤버 정보 가져오기
     @GetMapping("{board}/chats/{room}/member")
-    public ChatMemberDto loadChatMember(
+    public List<ChatMemberDto> loadChatMember(
             @PathVariable Long board,
             @PathVariable String room
     ){
-        return null;
+        return service.getChatMember(board, room);
     }
 
     // 채팅방 접속하기(웹소켓에서만 접근할 것)

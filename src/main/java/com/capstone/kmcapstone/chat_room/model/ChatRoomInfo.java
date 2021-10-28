@@ -23,9 +23,9 @@ public class ChatRoomInfo {
     private Long id;
 
     // 방 기준 게시글
-    @JoinColumn(name = "owner_board")
+    @JoinColumn(name = "target_board")
     @ManyToOne
-    private BoardPageInfo owner_board;
+    private BoardPageInfo target_board;
 
     // 방 제목
     @Column(name = "title")
