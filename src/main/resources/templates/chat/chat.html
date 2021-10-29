@@ -1,10 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
 
-</body>
+
+    <th:block th:replace="~{/layouts/basic :: setContent(~{this :: content})}">
+        <th:block th:fragment = "content">
+            <div class="container">
+                <div class="col-6">
+                    <label><b>채팅방</b></label>
+                </div>
+                <div id="msgArea" class="col"></div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <input type="text" id="msg" class="form-control" aria-label="Recipient`s username" aria-describedby="button-addon2">
+                        <div class="input-group-append">
+                            <button class="btn-outline-secondary" type="button" id="button-send">전송</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <span hidden sec:authentication="name" class="read" id="user"></span>
+        </th:block>
+    </th:block>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script th:inline="javascript">
+        $(document).ready(function (){
+
+            const username = $("#user").text();
+
+            $("#disconn").on("click",(e)=>{
+                disconnect();
+            });
+            $("#button-send").on("click",(e)=>{
+                send();
+            });
+
+            const websocket = new WebSocket("ws://localhost:8080/chat");
+            websocket.onmessage = onMessage;
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+
+            function send(){
+                let msg = document.getElementById("msg");
+                console.log(username + ":" + msg.value);
+                websocket.send(username + ":" + msg.value);
+                msg.value = '';
+            }
+            function onClose(evt){
+                var str = username + ": 님이 방을 나가셨습니다";
+                websocket.send(str);
+            }
+
+            function onOpen(evt){
+                var str = username + ": 님이 방에 입장하셨습니다";
+                websocket.send(str);
+            }
+
+            function onMessage(msg){
+                var data =  msg.data;
+                var message = null;
+                var arr = data.split(":");
+                var sessiopnId = arr[0];
+
+                for (var i = 0; i < arr.length; i++) {
+                    console.log('arr['+i+']'+arr[i]);
+                }
+                var cur_session = username;
+
+                console.log("cur_session:" + cur_session);
+
+                message = arr[1];
+                console.log(arr)
+                console.log("sessionId:" + sessiopnId);
+                console.log("cur_session:" + cur_session);
+                if (sessiopnId == cur_session) {
+                    var str = "<div class='col-6'>";
+                    str += "<div class='alert alert-secondary'>";
+                    str += "<b>"+sessiopnId+":"+message+"</b>";
+                    str += "</div></div>";
+                    $("#msgArea").append(str);
+                }else{
+                    var str = "<div class='col-6'>";
+                    str += "<div class='alert alert-warning'>";
+                    str += "<b>"+sessiopnId+":"+message+"</b>";
+                    str += "</div></div>";
+                    $("#msgArea").append(str);
+                }
+
+            }
+
+        });
+    </script>
 </html>
