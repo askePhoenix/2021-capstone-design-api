@@ -35,13 +35,11 @@ public class ReplyController {
         return service.getReplys(board);
     }
 
-    // 내가 작성한 댓글 보기
-    @GetMapping("{board}/replys/mine")
+    // 내가 작성한 댓글 전부 보기
+    @GetMapping("replys/mine")
     public List<ReplyDto> loadReplysMine(
-            @LoginUser UserInfo userInfo,
-            @PathVariable Long board){
-
-        return null;
+            @LoginUser UserInfo userInfo){
+        return service.getReplysUser(userInfo);
     }
 
     // 댓글 수정

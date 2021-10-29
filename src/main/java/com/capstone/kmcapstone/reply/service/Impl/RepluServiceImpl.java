@@ -57,19 +57,24 @@ public class RepluServiceImpl implements ReplyService {
         final List<Long> target_list = reply_list.stream().filter(x -> x.getTarget_reply_id() == -1L)
                 .map(ReplyDto::getId).collect(Collectors.toList());
         // 대댓글 id 에 매칭되는 리스트를 stream 상에 만들고 [ {id: [1L], re:[ 4L, 9L ]} ] 형태로 만듭니다.
-        final List<HashMap<String, List<Long>>> test_list = target_list.stream()
+        final List<HashMap<String, List<Long>>> meta_list = target_list.stream()
                 .map(x -> Maps.newHashMap(ImmutableMap.of("id", Collections.singletonList(x) , "re",
                         reply_list.stream().filter(y -> Objects.equals(y.getTarget_reply_id(), x)).map(ReplyDto::getId).collect(Collectors.toList())
                 ))).collect(Collectors.toList());
         // test 를 replyDto로 새로 만듭니다.
 
         // return repository.searchByAllBoard(board).stream().map(ReplyDto::new).collect(Collectors.toList());
-        return test_list.stream()
+        return meta_list.stream()
                 .map(x -> new ReplyDto(
                         reply_list.stream().filter(y -> Objects.equals(y.getId(), x.get("id").get(0))).collect(Collectors.toList()).get(0),
                          x.get("re").stream().map(z ->
                                         reply_list.stream().filter(y -> Objects.equals(y.getId(), z)).collect(Collectors.toList()).get(0)
                                 ).toList()
                 )).collect(Collectors.toList());
+    }
+    // 내가 작성한 댓글,  보기
+    @Override
+    public List<ReplyDto> getReplysUser(UserInfo userInfo) {
+        return repository.searchByAllWriter(userInfo).stream().map(ReplyDto::new).collect(Collectors.toList());
     }
 }
