@@ -30,7 +30,7 @@ public class BoardPageInfo {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "contents")
+    @Column(name = "contents", length = 8000)
     private String contents;
 
     @Column(name = "is_deleted")
