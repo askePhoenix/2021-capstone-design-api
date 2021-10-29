@@ -23,9 +23,7 @@ public class BoardPageController {
 
     // 게시판 리스트 html 가져오기
     @GetMapping("")
-    public ModelAndView getBoard(
-            ModelAndView model
-    ) {
+    public ModelAndView getBoard(ModelAndView model) {
         model.setViewName("/board/board");
         model.addObject("table_view", service.getPage(0,10) );
 
