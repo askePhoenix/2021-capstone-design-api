@@ -17,12 +17,18 @@ public class ChatRoomController {
     private final ChatRoomService service;
 
     // 채팅방 만들기
-    @PostMapping("{board}/chats")
+    @PostMapping("{board}/chats/{title}")
     public ChatRoomDto createChatRoom(
             @LoginUser UserInfo userInfo,
-            @PathVariable Long board) {
-
+            @PathVariable Long board,
+            @PathVariable String title
+    ) {
         // 채팅방 제목에는 특수문자 [/] 제외해야 합니다. (html ajax 에서 처리 할 것)
+        final String title_validated = title.replace("/", " ");
+
+        // 1) 채팅방 제목 중복 확인
+        // 2)
+
         return null;
     }
 

@@ -3,6 +3,7 @@ package com.capstone.kmcapstone.chat_room.model;
 import com.capstone.kmcapstone.board.model.BoardPageInfo;
 import com.capstone.kmcapstone.user.model.UserInfo;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -51,6 +52,15 @@ public class ChatRoomInfo {
     @Column(name= "update_time")
     private LocalDateTime updateDateTime;
 
-
-
+    @Builder
+    public ChatRoomInfo(Long id, BoardPageInfo target_board, UserInfo owner, String title, String descript, boolean isDeleted, LocalDateTime createDateTime, LocalDateTime updateDateTime) {
+        this.id = id;
+        this.target_board = target_board;
+        this.owner = owner;
+        this.title = title;
+        this.descript = descript;
+        this.isDeleted = isDeleted;
+        this.createDateTime = createDateTime;
+        this.updateDateTime = updateDateTime;
+    }
 }

@@ -3,12 +3,14 @@ package com.capstone.kmcapstone.chat_room.service.Impl;
 import com.capstone.kmcapstone.board.repository.BoardDetailRepository;
 import com.capstone.kmcapstone.chat_room.dto.member.ChatMemberDto;
 import com.capstone.kmcapstone.chat_room.dto.search.ChatRoomDto;
+import com.capstone.kmcapstone.chat_room.model.ChatRoomInfo;
 import com.capstone.kmcapstone.chat_room.repository.ChatMemberRepository;
 import com.capstone.kmcapstone.chat_room.repository.ChatRoomRepository;
 import com.capstone.kmcapstone.chat_room.service.ChatRoomService;
 import com.capstone.kmcapstone.user.model.UserInfo;
 import com.capstone.kmcapstone.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -56,8 +58,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     // 채팅방 생성하기
-    private void createChatRoom(Long target_board, UserInfo userInfo) {
+    private Long createChatRoom(Long target_board, UserInfo userInfo, String title) {
+        // 0) 게시판이 있는지
+        final boolean is_board = boardRepository.searchById(target_board).isPresent();
 
+        // 1) 채팅방 제목 중복 확인
+        final boolean dupled = repository.searchByTitle(title, PageRequest.of(0,1)).size() > 0;
+
+        return is_board && dupled ? -1L : repository.save(
+                ChatRoomInfo.builder()
+                        .title(title)
+                        .build()
+        ).getId();
     }
 
     // 채팅방 검색하기
