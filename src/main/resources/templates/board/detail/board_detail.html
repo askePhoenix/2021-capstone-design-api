@@ -24,6 +24,9 @@
         .reply-icon-m {
             margin-left: 30px;
         }
+        .cursored{
+            cursor: pointer;
+        }
     </style>
 </th:block>
 <!-- index.html 고유 스크립트 추가 -->
@@ -117,8 +120,8 @@
                                 <div class="row row-reply0 card">
                                     <div class="col-8 d-flex">
                                         <h5>댓글작성자</h5> <span>작성시간</span>
-                                        <div class="pull-right reply reply-icon-m"
-                                             onclick="reply_show(0)" style="cursor: pointer"
+                                        <div class="pull-right reply reply-icon-m cursored"
+                                             onclick="reply_show(0)"
                                         ><span><i class="fa fa-reply"></i> reply</span>
                                         </div>
                                     </div>
@@ -164,7 +167,7 @@
                                             대댓글 작성내용2
                                         </div>
                                         <div class="input-group input-reply">
-                                            <label for="reply_text"></label>
+                                            <label for="reply_text2"></label>
                                             <input type="text" class="form-control" id="reply_text2" placeholder="댓글 입력"
                                                    name="reply_text">
                                             <div class="input-group-repend">
