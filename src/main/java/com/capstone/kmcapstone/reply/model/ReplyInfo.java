@@ -50,13 +50,13 @@ public class ReplyInfo {
     @Column(name= "update_time")
     private LocalDateTime updateDateTime;
 
-    @Column(name = "isDeleted")
+    @Column(name = "is_deleted")
     private boolean isDeleted;
 
     @Builder
     public ReplyInfo(Long id, UserInfo writer, BoardPageInfo target_board,
                      ReplyInfo target_reply, LocalDateTime createDateTime,
-                     LocalDateTime updateDateTime, String message) {
+                     LocalDateTime updateDateTime, String message, boolean isDeleted) {
         this.id = id;
         this.writer = writer;
         this.target_board = target_board;
@@ -64,5 +64,6 @@ public class ReplyInfo {
         this.createDateTime = createDateTime;
         this.updateDateTime = updateDateTime;
         this.message = message;
+        this.isDeleted = isDeleted;
     }
 }

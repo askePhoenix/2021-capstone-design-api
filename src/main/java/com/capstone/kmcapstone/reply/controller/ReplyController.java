@@ -18,7 +18,7 @@ public class ReplyController {
 
     // 댓글 작성
     // /api/replys POST
-    @PostMapping("{board}/reply")
+    @PostMapping("{board}/replys")
     public ReplyDto createReply(
             @LoginUser UserInfo userInfo,
             ReplyVIewDto vIewDto,
@@ -28,19 +28,37 @@ public class ReplyController {
 
     // 댓글 보기
     // /api/replys GET
-    @GetMapping("{board}/reply")
+    @GetMapping("{board}/replys")
     public List<ReplyDto> loadReplys(
             @PathVariable Long board
     ){
         return service.getReplys(board);
     }
 
-    // 내가 작성한 댓글 보기
+    // 내가 작성한 댓글 전부 보기
+    @GetMapping("replys/mine")
+    public List<ReplyDto> loadReplysMine(
+            @LoginUser UserInfo userInfo){
+        return service.getReplysUser(userInfo);
+    }
 
     // 댓글 수정
     // /api/replys/{reply} PUT
+    @PutMapping("replys/{reply}")
+    public ReplyDto putReplysMine(
+            @LoginUser UserInfo userInfo,
+            @PathVariable Long reply,
+            ReplyVIewDto replyDto){
+        return service.putReply(userInfo, reply, replyDto);
+    }
 
     // 댓글 삭제
     // /api/replys/{reply} DELETE
+    @DeleteMapping("replys/{reply}")
+    public ReplyDto deleteReplysMine(
+            @LoginUser UserInfo userInfo,
+            @PathVariable Long reply) {
+        return service.deleteReply(userInfo, reply);
+    }
 
 }

@@ -2,6 +2,7 @@ package com.capstone.kmcapstone.reply.repository;
 
 import com.capstone.kmcapstone.board.model.BoardPageInfo;
 import com.capstone.kmcapstone.reply.model.ReplyInfo;
+import com.capstone.kmcapstone.user.model.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,5 +19,12 @@ public interface ReplyRepository extends JpaRepository<ReplyInfo, Long> {
     @Query("select reply from ReplyInfo reply where reply.id = ?1 and reply.isDeleted = false")
     ReplyInfo searchByID(Long id);
 
+    // 댓글 작성자의 댓글 가져오기
+    @Query("select reply from ReplyInfo reply where reply.writer =?1 and reply.isDeleted = false ")
+    List<ReplyInfo> searchByAllWriter(UserInfo userInfo);
+
+    // 댓글 작성자의 댓글 중 ID가 동일한 댓글을 찾음
+    @Query("select reply from ReplyInfo reply where reply.writer = ?1 and reply.id = ?2 and reply.isDeleted = false")
+    Optional<ReplyInfo> searchByWriterAndId(UserInfo userInfo, Long id);
 
 }

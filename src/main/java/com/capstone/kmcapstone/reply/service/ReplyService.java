@@ -12,4 +12,13 @@ public interface ReplyService {
 
     // 게시글 댓글 전부 가져오기
     List<ReplyDto> getReplys(Long target_board);
+
+    // 내가 작성한 댓글,  보기
+    List<ReplyDto> getReplysUser(UserInfo userInfo);
+
+    // 해당 댓글 수정하기
+    ReplyDto putReply(UserInfo userInfo, Long reply, ReplyVIewDto replyDto);
+
+    // 해당 댓글 삭제하기
+    ReplyDto deleteReply(UserInfo userInfo, Long reply);
 }

@@ -8,10 +8,15 @@ import com.capstone.kmcapstone.reply.model.ReplyInfo;
 import com.capstone.kmcapstone.reply.repository.ReplyRepository;
 import com.capstone.kmcapstone.reply.service.ReplyService;
 import com.capstone.kmcapstone.user.model.UserInfo;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -29,7 +34,7 @@ public class RepluServiceImpl implements ReplyService {
                     ReplyInfo.builder()
                             .writer(userInfo)
                             .target_board(board)
-                            .target_reply(vIewDto.isAction() ?
+                            .target_reply(vIewDto.getTarget_reply_id() != null  ?
                                     repository.searchByID(vIewDto.getTarget_reply_id()) : null)
                             .message(vIewDto.getMessage())
                             .build()
@@ -43,10 +48,70 @@ public class RepluServiceImpl implements ReplyService {
 
     // 게시글 댓글 전부 가져오기
     @Override
-    public List<ReplyDto> getReplys(Long target_board){
+    public List<ReplyDto> getReplys(Long target_board) {
         BoardPageInfo board = boardDetailRepository.searchById(target_board).orElseGet(
                 () -> BoardPageInfo.builder().id(-1L).build()
         );
-        return repository.searchByAllBoard(board).stream().map(ReplyDto::new).collect(Collectors.toList());
+        final List<ReplyDto> reply_list = repository.searchByAllBoard(board).stream().map(ReplyDto::new).collect(Collectors.toList());
+        // target 이 되는 stream 리스트를 만듭니다. ex) [ 1L, 3L, 99L ]
+        final List<Long> target_list = reply_list.stream().filter(x -> x.getTarget_reply_id() == -1L)
+                .map(ReplyDto::getId).collect(Collectors.toList());
+        // 대댓글 id 에 매칭되는 리스트를 stream 상에 만들고 [ {id: [1L], re:[ 4L, 9L ]} ] 형태로 만듭니다.
+        final List<HashMap<String, List<Long>>> meta_list = target_list.stream()
+                .map(x -> Maps.newHashMap(ImmutableMap.of("id", Collections.singletonList(x) , "re",
+                        reply_list.stream().filter(y -> Objects.equals(y.getTarget_reply_id(), x)).map(ReplyDto::getId).collect(Collectors.toList())
+                ))).collect(Collectors.toList());
+        // test 를 replyDto로 새로 만듭니다.
+
+        // return repository.searchByAllBoard(board).stream().map(ReplyDto::new).collect(Collectors.toList());
+        return meta_list.stream()
+                .map(x -> new ReplyDto(
+                        reply_list.stream().filter(y -> Objects.equals(y.getId(), x.get("id").get(0))).collect(Collectors.toList()).get(0),
+                         x.get("re").stream().map(z ->
+                                        reply_list.stream().filter(y -> Objects.equals(y.getId(), z)).collect(Collectors.toList()).get(0)
+                                ).toList()
+                )).collect(Collectors.toList());
+    }
+    // 내가 작성한 댓글,  보기
+    @Override
+    public List<ReplyDto> getReplysUser(UserInfo userInfo) {
+        return repository.searchByAllWriter(userInfo).stream().map(ReplyDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public ReplyDto putReply(UserInfo userInfo, Long reply, ReplyVIewDto replyDto) {
+        final ReplyInfo info = repository.searchByWriterAndId(userInfo, reply).orElseGet(
+                ()-> ReplyInfo.builder().id(-1L).build()
+        );
+
+        return info.getId() == -1 ? new ReplyDto(info) : new ReplyDto(
+                repository.save( ReplyInfo.builder()
+                        .id(info.getId())
+                        .writer(userInfo)
+                        .target_board(info.getTarget_board())
+                        .target_reply(info.getTarget_reply())
+                        .message(replyDto.getMessage() == null ? "" : replyDto.getMessage())
+                        .createDateTime(info.getCreateDateTime())
+                        .isDeleted(false)
+                        .build() )
+        );
+    }
+
+    @Override
+    public ReplyDto deleteReply(UserInfo userInfo, Long reply) {
+        final ReplyInfo info = repository.searchByWriterAndId(userInfo, reply).orElseGet(
+                ()-> ReplyInfo.builder().id(-1L).build()
+        );
+        return info.getId() == -1 ? new ReplyDto(info) : new ReplyDto(
+                repository.save( ReplyInfo.builder()
+                        .id(info.getId())
+                        .writer(info.getWriter())
+                        .target_board(info.getTarget_board())
+                        .target_reply(info.getTarget_reply())
+                        .message(info.getMessage())
+                        .createDateTime(info.getCreateDateTime())
+                        .isDeleted(true)
+                        .build() )
+        );
     }
 }
