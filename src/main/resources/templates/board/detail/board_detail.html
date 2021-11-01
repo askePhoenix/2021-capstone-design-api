@@ -24,7 +24,8 @@
         .reply-icon-m {
             margin-left: 30px;
         }
-        .cursored{
+
+        .cursored {
             cursor: pointer;
         }
     </style>
@@ -36,12 +37,19 @@
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
         function reply_show(id) {
-            let reply_viewer = $("#reply_view"+id);
-            if ( reply_viewer.css('display') === 'none') {
+            let reply_viewer = $("#reply_view" + id);
+            if (reply_viewer.css('display') === 'none') {
                 reply_viewer.show();
             } else {
                 reply_viewer.hide();
             }
+
+        }
+
+        function reload_replys(res) {
+            let html = "";
+
+            $("#reply_container").html(html);
 
         }
 
@@ -114,21 +122,20 @@
                     <h3 class="text-center"> 댓글 </h3>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="media-body" id="reply_container">
+                            <div th:each="item, num : ${replys}"
+                                 class="media-body" id="reply_container">
 
-
-                                <div class="row row-reply0 card">
+                                <div class="row row-reply0 card" th:id="${item.getId()}">
                                     <div class="col-8 d-flex">
-                                        <h5>댓글작성자</h5> <span>작성시간</span>
+                                        <h5 th:text="${item.writer_nickname}"></h5> <span th:text="${item.getCreate_time()}">작성시간</span>
                                         <div class="pull-right reply reply-icon-m cursored"
-                                             onclick="reply_show(0)"
-                                        ><span><i class="fa fa-reply"></i> reply</span>
-                                        </div>
+                                             th:attr="onclick='reply_show(\'' + ${item.getId()} + '\')'">
+                                            <span><i class="fa fa-reply"></i> reply</span></div>
                                     </div>
-                                    <div class="block-reply">댓글내용</div>
-                                    <div class="input-group input-reply" id="reply_view0">
-                                        <label for="reply_text0"></label>
-                                        <input type="text" class="form-control" id="reply_text0" placeholder="댓글 입력"
+                                    <div th:text="${item.getMessage()}" class="block-reply"></div>
+                                    <div class="input-group input-reply" th:id="${'reply_view'+item.getId()}" style="display: none">
+                                        <label th:for="${item.getId()}"></label>
+                                        <input type="text" class="form-control" th:id="${item.getId()}" placeholder="댓글 입력"
                                                name="reply_text">
                                         <div class="input-group-repend">
                                             <button class="btn btn-outline-secondary" type="button">
@@ -137,38 +144,24 @@
                                         </div>
                                     </div>
 
-                                    <div class="media mt-4 card"><a class="pr-3" href="#"></a>
+
+                                    <div th:each="item_in, num_in : ${item.getRe_reply()}" class="media mt-4 card">
+                                        <a class="pr-3" href="#"></a>
                                         <div class="media-body">
                                             <div class="row">
                                                 <div class="col-12 d-flex">
-                                                    <h5>대댓글 작성자1</h5> <span>작성시간1</span>
+                                                    <h5 th:text="${item_in.writer_nickname}"></h5> <span>작성시간1</span>
+                                                    <div class="pull-right reply reply-icon-m cursored"
+                                                         th:attr="onclick='reply_show(\'' + ${item_in.getId()} + '\')'">
+                                                        <span><i class="fa fa-reply"></i> reply</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             대댓글 작성내용1
                                         </div>
-                                        <div class="input-group input-reply">
-                                            <label for="reply_text1"></label>
-                                            <input type="text" class="form-control" id="reply_text1" placeholder="댓글 입력"
-                                                   name="reply_text">
-                                            <div class="input-group-repend">
-                                                <button class="btn btn-outline-secondary" type="button">
-                                                    전송
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="media mt-3 card"><a class="pr-3" href="#"></a>
-                                        <div class="media-body">
-                                            <div class="row">
-                                                <div class="col-12 d-flex">
-                                                    <h5>대댓글 작성자2</h5> <span>작성자2</span>
-                                                </div>
-                                            </div>
-                                            대댓글 작성내용2
-                                        </div>
-                                        <div class="input-group input-reply">
-                                            <label for="reply_text2"></label>
-                                            <input type="text" class="form-control" id="reply_text2" placeholder="댓글 입력"
+                                        <div class="input-group input-reply" style="display: none" th:id="${'reply_view'+item_in.getId()}" >
+                                            <label th:for="${'re_reply_label'+item_in.getId()}"></label>
+                                            <input type="text" class="form-control" th:id="${'re_reply_label'+item_in.getId()}" placeholder="댓글 입력"
                                                    name="reply_text">
                                             <div class="input-group-repend">
                                                 <button class="btn btn-outline-secondary" type="button">
@@ -178,38 +171,18 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row row-reply0 card">
-                                    <div class="col-8 d-flex">
-                                        <h5>댓글작성자</h5> <span>작성시간</span>
-                                        <div class="pull-right reply"><a href="#"><span><i class="fa fa-reply"></i> reply</span></a>
-                                        </div>
-                                    </div>
-                                    <div class="block-reply">댓글내용</div>
-                                    <div class="input-group input-reply">
-                                        <label for="reply_text"></label>
-                                        <input type="text" class="form-control" id="reply_text" placeholder="댓글 입력"
-                                               name="reply_text">
-                                        <div class="input-group-repend">
-                                            <button class="btn btn-outline-secondary" type="button">
-                                                전송
-                                            </button>
-                                        </div>
-                                    </div>
+                            </div>
+
+
+                            <div class="input-group input-reply" style="margin-top: 20px">
+                                <label for="reply_text999"></label>
+                                <input type="text" class="form-control" id="reply_text999" placeholder="댓글 입력"
+                                       name="reply_text">
+                                <div class="input-group-repend">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        전송
+                                    </button>
                                 </div>
-
-
-                                <div class="input-group input-reply" style="margin-top: 20px">
-                                    <label for="reply_text999"></label>
-                                    <input type="text" class="form-control" id="reply_text999" placeholder="댓글 입력"
-                                           name="reply_text">
-                                    <div class="input-group-repend">
-                                        <button class="btn btn-outline-secondary" type="button">
-                                            전송
-                                        </button>
-                                    </div>
-                                </div>
-
-
                             </div>
                         </div>
                     </div>
