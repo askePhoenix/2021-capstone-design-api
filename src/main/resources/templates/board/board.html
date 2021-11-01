@@ -109,8 +109,7 @@
                 <tbody id="table_view">
                 <tr th:each="item, num : ${table_view.getContent()}"
                     style="cursor:pointer;"
-                    th:attr="onclick='location.href=\'/boards/' + ${item.getId()} + '\''"
-                    th:href="@{|/api/boards/${item.getId()}|}">
+                    th:attr="onclick='location.href=\'/boards/' + ${item.getId()} + '\''">
                     <td th:text="${item.getId()}" hidden></td>
                     <td th:text="${item.getTitle()}"></td>
                     <td th:text="${item.getUser_name()}"></td>

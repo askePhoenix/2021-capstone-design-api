@@ -44,15 +44,21 @@ public class ReplyController {
 
     // 댓글 수정
     // /api/replys/{reply} PUT
-    @PutMapping("{board}/replys/{reply}")
+    @PutMapping("replys/{reply}")
     public ReplyDto putReplysMine(
             @LoginUser UserInfo userInfo,
-            @PathVariable Long board,
-            @PathVariable Long reply){
-        return null;
+            @PathVariable Long reply,
+            ReplyVIewDto replyDto){
+        return service.putReply(userInfo, reply, replyDto);
     }
 
     // 댓글 삭제
     // /api/replys/{reply} DELETE
+    @DeleteMapping("replys/{reply}")
+    public ReplyDto deleteReplysMine(
+            @LoginUser UserInfo userInfo,
+            @PathVariable Long reply) {
+        return service.deleteReply(userInfo, reply);
+    }
 
 }

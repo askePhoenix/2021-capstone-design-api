@@ -15,4 +15,10 @@ public interface ReplyService {
 
     // 내가 작성한 댓글,  보기
     List<ReplyDto> getReplysUser(UserInfo userInfo);
+
+    // 해당 댓글 수정하기
+    ReplyDto putReply(UserInfo userInfo, Long reply, ReplyVIewDto replyDto);
+
+    // 해당 댓글 삭제하기
+    ReplyDto deleteReply(UserInfo userInfo, Long reply);
 }

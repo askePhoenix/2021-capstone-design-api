@@ -77,4 +77,41 @@ public class RepluServiceImpl implements ReplyService {
     public List<ReplyDto> getReplysUser(UserInfo userInfo) {
         return repository.searchByAllWriter(userInfo).stream().map(ReplyDto::new).collect(Collectors.toList());
     }
+
+    @Override
+    public ReplyDto putReply(UserInfo userInfo, Long reply, ReplyVIewDto replyDto) {
+        final ReplyInfo info = repository.searchByWriterAndId(userInfo, reply).orElseGet(
+                ()-> ReplyInfo.builder().id(-1L).build()
+        );
+
+        return info.getId() == -1 ? new ReplyDto(info) : new ReplyDto(
+                repository.save( ReplyInfo.builder()
+                        .id(info.getId())
+                        .writer(userInfo)
+                        .target_board(info.getTarget_board())
+                        .target_reply(info.getTarget_reply())
+                        .message(replyDto.getMessage() == null ? "" : replyDto.getMessage())
+                        .createDateTime(info.getCreateDateTime())
+                        .isDeleted(false)
+                        .build() )
+        );
+    }
+
+    @Override
+    public ReplyDto deleteReply(UserInfo userInfo, Long reply) {
+        final ReplyInfo info = repository.searchByWriterAndId(userInfo, reply).orElseGet(
+                ()-> ReplyInfo.builder().id(-1L).build()
+        );
+        return info.getId() == -1 ? new ReplyDto(info) : new ReplyDto(
+                repository.save( ReplyInfo.builder()
+                        .id(info.getId())
+                        .writer(info.getWriter())
+                        .target_board(info.getTarget_board())
+                        .target_reply(info.getTarget_reply())
+                        .message(info.getMessage())
+                        .createDateTime(info.getCreateDateTime())
+                        .isDeleted(true)
+                        .build() )
+        );
+    }
 }
