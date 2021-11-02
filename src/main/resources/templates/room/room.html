@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
->
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>채팅 서비스</title>
@@ -16,24 +15,27 @@
 
 </head>
 <body>
-<button class = "btn btn-primary" id = "start">입장하기</button>
+<input type="text" id="nickname" class="form-inline" placeholder="닉네임을 입력해주세요" required autofocus>
+<button class = "btn btn-primary" id = "name">확인</button>
+<label for="roomName" class="label label-default">방 이름</label>
+<label th:text="*{room.name}" id="roomName" class="form-inline"></label>
 <div id = "chatroom" style = "width:400px; height: 600px; border:1px solid; background-color : gray"></div>
 <input type = "text" id = "message" style = "height : 30px; width : 340px" placeholder="내용을 입력하세요" autofocus>
 <button class = "btn btn-primary" id = "send">전송</button>
+<script>
 
-<th:block th:fragment = "content">
-    <span hidden sec:authentication="name" class="read" id="user"></span>
-</th:block>
-
-
+</script>
 </body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script th:inline="javascript">
-    var webSocket
-    const nickname = $("#user").text();
-    document.getElementById("start").addEventListener("click", function(){
-        document.getElementById("start").style.display="none";
+<script th:inline = "javascript">
+    var webSocket;
+    var nickname;
+    /* <![CDATA[*/
+    var roomId = /*[[${room.roomId}]]*/;
+    /* ]]> */
+    document.getElementById("name").addEventListener("click",function(){
+        nickname = document.getElementById("nickname").value;
+        document.getElementById("nickname").style.display = "none";
+        document.getElementById("name").style.display = "none";
         connect();
     })
     document.getElementById("send").addEventListener("click",function(){
@@ -46,16 +48,16 @@
         webSocket.onmessage = onMessage;
     }
     function disconnect(){
-        webSocket.send(nickname + "님이 퇴장하셨습니다");
+        webSocket.send(JSON.stringify({chatRoomId : roomId,type:'LEAVE',writer:nickname}));
         webSocket.close();
     }
     function send(){
         msg = document.getElementById("message").value;
-        webSocket.send(nickname + " : " + msg);
+        webSocket.send(JSON.stringify({chatRoomId : roomId,type:'CHAT',writer:nickname,message : msg}));
         document.getElementById("message").value = "";
     }
     function onOpen(){
-        webSocket.send(nickname + "님이 입장하셨습니다.");
+        webSocket.send(JSON.stringify({chatRoomId : roomId,type:'ENTER',writer:nickname}));
     }
     function onMessage(e){
         data = e.data;
@@ -63,7 +65,8 @@
         chatroom.innerHTML = chatroom.innerHTML + "<br>" + data;
     }
     function onClose(){
-
+        disconnect();
     }
+
 </script>
 </html>
