@@ -29,9 +29,9 @@
 <script th:inline = "javascript">
     var webSocket;
     var nickname;
-    /* <![CDATA[*/
-    var roomId = /*[[${room.roomId}]]*/;
-    /* ]]> */
+/*     <![CDATA[*/
+    var roomId = [[${room.roomId}]];
+ /*    ]]>*/
     document.getElementById("name").addEventListener("click",function(){
         nickname = document.getElementById("nickname").value;
         document.getElementById("nickname").style.display = "none";
@@ -65,7 +65,8 @@
         chatroom.innerHTML = chatroom.innerHTML + "<br>" + data;
     }
     function onClose(){
-        disconnect();
+        webSocket.send(JSON.stringify({chatRoomId : roomId,type:'LEAVE',writer:nickname}));
+        webSocket.close();
     }
 
 </script>
