@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatHandler extends TextWebSocketHandler {
 
-    private static List<WebSocketSession> sessionList = new ArrayList<>();
+
     private final ChatService chatService;
     private final ObjectMapper objectMapper;
 
@@ -30,7 +30,6 @@ public class ChatHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
         log.info("payload:"+payload);
-
         ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
         ChatRoom room = chatService.findRoomById(chatMessage.getRoomId());
         room.handleActions(session, chatMessage, chatService);
@@ -40,8 +39,7 @@ public class ChatHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        chatService.sendMessage(session, "접속 하였습니다.");
-        sessionList.add(session);
+
         log.info(session+":클라이언트 접속");
     }
 
@@ -49,8 +47,6 @@ public class ChatHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         super.afterConnectionClosed(session,status);
         log.info(session+"클라이언트 접속 해제");
-        sessionList.remove(session);
-
 
     }
 }

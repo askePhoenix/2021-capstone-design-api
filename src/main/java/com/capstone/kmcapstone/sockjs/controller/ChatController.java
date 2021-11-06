@@ -28,6 +28,7 @@ public class ChatController {
 
     @GetMapping("/room/{id}")
     public String join(@PathVariable String id, Model model) {
+
         model.addAttribute("room", chatService.findRoomById(id));
         return "/room/room";
     }

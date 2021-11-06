@@ -1,6 +1,7 @@
 package com.capstone.kmcapstone.sockjs.service;
 
 
+import com.capstone.kmcapstone.sockjs.message.ChatMessage;
 import com.capstone.kmcapstone.sockjs.room.ChatRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +38,8 @@ public class ChatService {
         return chatRooms.get(roomId);
     }
 
+
+
     public ChatRoom createRoom(String name) {
         String randomId = UUID.randomUUID().toString();
         ChatRoom chatRoom = ChatRoom.builder()
@@ -48,9 +51,9 @@ public class ChatService {
         return chatRoom;
     }
 
-    public <T> void sendMessage(WebSocketSession session, T message) {
+    public <T> void sendMessage(WebSocketSession session, ChatMessage message) {
         try {
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message.getMessage())));
         } catch (IOException e) {
             e.printStackTrace();
         }

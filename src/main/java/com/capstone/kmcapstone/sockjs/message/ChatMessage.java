@@ -8,11 +8,11 @@ import lombok.Setter;
 public class ChatMessage {
 
     public enum MessageType{
-        ENTER,TALK
+        ENTER,CHAT,LEAVE
     }
     private MessageType type;
     private String roomId;//방 아이디
-    private String sender;//보낸이
+    private String writer;//보낸이
     private String message;//메세지
 
 }
