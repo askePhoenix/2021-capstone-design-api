@@ -9,6 +9,7 @@
     <!-- 부가적인 테마 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
@@ -42,14 +43,16 @@
         send();
     })
     function connect(){
-        webSocket = new WebSocket("ws://localhost:8080/chat");
+        const webSocket = new SockJS("http://localhost:8080/chat");
         webSocket.onopen = onOpen;
-        webSocket.onclose = onClose;
+       /* webSocket.onclose = onClose;*/
         webSocket.onmessage = onMessage;
+        window.onbeforeunload = onClose;
     }
     function disconnect(){
         webSocket.send(JSON.stringify({chatRoomId : roomId,type:'LEAVE',writer:nickname}));
         webSocket.close();
+
     }
     function send(){
         msg = document.getElementById("message").value;

@@ -29,7 +29,7 @@
         <tr th:each="room : ${rooms}">
             <td th:text="${room.name}"></td>
             <td>
-                <a class = "btn btn-primary pull-right" th:href = "@{/room/rooms/{id} (id = ${room.roomId})}">입장하기</a>
+                <a class = "btn btn-primary pull-right" th:href = "@{/room/{id} (id = ${room.roomId})}">입장하기</a>
             </td>
         </tr>
         </tbody>

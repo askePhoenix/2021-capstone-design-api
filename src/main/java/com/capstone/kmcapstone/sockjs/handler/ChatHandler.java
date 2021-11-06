@@ -1,5 +1,10 @@
 package com.capstone.kmcapstone.sockjs.handler;
 
+import com.capstone.kmcapstone.sockjs.message.ChatMessage;
+import com.capstone.kmcapstone.sockjs.room.ChatRoom;
+import com.capstone.kmcapstone.sockjs.service.ChatService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -13,26 +18,29 @@ import java.util.List;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ChatHandler extends TextWebSocketHandler {
 
     private static List<WebSocketSession> sessionList = new ArrayList<>();
+    private final ChatService chatService;
+    private final ObjectMapper objectMapper;
+
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
         log.info("payload:"+payload);
 
-        send(sessionList,message);
+        ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
+        ChatRoom room = chatService.findRoomById(chatMessage.getRoomId());
+        room.handleActions(session, chatMessage, chatService);
+
     }
 
-    private void send(List<WebSocketSession> sessions , TextMessage message) throws IOException {
-        for (WebSocketSession s : sessions) {
-            s.sendMessage(message);
-        }
-    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        chatService.sendMessage(session, "접속 하였습니다.");
         sessionList.add(session);
         log.info(session+":클라이언트 접속");
     }
