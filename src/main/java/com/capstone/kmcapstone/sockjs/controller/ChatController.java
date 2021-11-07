@@ -1,8 +1,10 @@
 package com.capstone.kmcapstone.sockjs.controller;
 
+import com.capstone.kmcapstone.annotation.LoginUser;
 import com.capstone.kmcapstone.sockjs.room.ChatRoom;
 import com.capstone.kmcapstone.sockjs.room.RoomForm;
 import com.capstone.kmcapstone.sockjs.service.ChatService;
+import com.capstone.kmcapstone.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -27,7 +29,7 @@ public class ChatController {
     }
 
     @GetMapping("/room/{id}")
-    public String join(@PathVariable String id, Model model) {
+    public String join(@PathVariable String id, Model model , @LoginUser UserInfo userInfo) {
 
         model.addAttribute("room", chatService.findRoomById(id));
         return "/room/room";

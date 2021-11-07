@@ -8,12 +8,15 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 public class ChatRoom {
     private String roomId;
     private String name;
     private Set<WebSocketSession> sessions = new HashSet<>();
+
+
 
     @Builder
     public ChatRoom(String roomId, String name) {
@@ -36,9 +39,30 @@ public class ChatRoom {
 
     }
 
+    public void sendAll(WebSocketSession session, ChatMessage chatMessage , ChatService chatService) {
+        chatMessage.setMessage(chatMessage.getWriter() + ":" + chatMessage.getMessage());
+    }
+
+    public void sendPrivate(WebSocketSession session, ChatMessage chatMessage , ChatService chatService) {
+
+    }
+    public WebSocketSession findSession(WebSocketSession session){
+        WebSocketSession findSession =  null;
+        if(sessions.contains(session)){
+            findSession = session;
+        };
+        return findSession;
+    }
+
     public void leave(WebSocketSession session){
 
-        sessions.remove(session);
+        if (findSession(session) != null) {
+            System.out.println(session +":이 방을 나갔습니다 .");
+            sessions.remove(session);
+
+        }
+
+
     }
 
     public <T> void sendMessage(ChatMessage message, ChatService chatService) {

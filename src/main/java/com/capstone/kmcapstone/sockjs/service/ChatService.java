@@ -3,6 +3,8 @@ package com.capstone.kmcapstone.sockjs.service;
 
 import com.capstone.kmcapstone.sockjs.message.ChatMessage;
 import com.capstone.kmcapstone.sockjs.room.ChatRoom;
+import com.capstone.kmcapstone.user.model.UserInfo;
+import com.capstone.kmcapstone.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ public class ChatService {
 
     private final ObjectMapper objectMapper;
     private Map<String, ChatRoom> chatRooms;
+    private final UserRepository userRepository;
+
 
     @PostConstruct
     private void init() {
@@ -38,6 +42,9 @@ public class ChatService {
         return chatRooms.get(roomId);
     }
 
+    public UserInfo getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseGet(()->UserInfo.builder().build());
+    }
 
 
     public ChatRoom createRoom(String name) {
@@ -50,6 +57,13 @@ public class ChatService {
 
         return chatRoom;
     }
+
+    public void leave(WebSocketSession session) {
+        chatRooms.forEach((key , val)->{
+            val.leave(session);
+        });
+    }
+
 
     public <T> void sendMessage(WebSocketSession session, ChatMessage message) {
         try {
