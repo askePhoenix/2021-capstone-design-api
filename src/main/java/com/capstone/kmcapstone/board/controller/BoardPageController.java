@@ -44,6 +44,7 @@ public class BoardPageController {
     ) {
         final BoardPageDto dto = service.loadBoardDetail(board);
         model.setViewName("board/detail/board_detail");
+        model.addObject("board_num", board);
 
         if (dto.getId() == -1L) {
             model.addObject("title", "존재하지 않는 게시글입니다.");

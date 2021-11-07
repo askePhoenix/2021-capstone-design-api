@@ -53,10 +53,57 @@
 
         }
 
+        function post_reply(board, target) {
+            const message = "#reply_value_" + board;
+            const params = {
+                message: $(message).val()
+                , target_reply_id: target
+                , action: true
+                , _csrf: $("#_csrf").val()
+            };
+            $.ajax({
+                type: "POST",            // HTTP method type(GET, POST) 형식이다.
+                url: "/api/boards/" + board + "/replys",      // 컨트롤러에서 대기중인 URL 주소이다.
+                data: params,            // Json 형식의 데이터이다.
+                success: function (res) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+                    // 응답코드 > 0000
+                    // alert(res.code);
+                    window.location.href = "/boards/" + board;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+                    alert("통신 실패.")
+                }
+            });
+        }
+
+        function post_reply_new(board) {
+            const message = "#reply_text_new";
+            const params = {
+                message: $(message).val()
+                , action: false
+                , _csrf: $("#_csrf").val()
+            };
+            $.ajax({
+                type: "POST",            // HTTP method type(GET, POST) 형식이다.
+                url: "/api/boards/" + board + "/replys",      // 컨트롤러에서 대기중인 URL 주소이다.
+                data: params,            // Json 형식의 데이터이다.
+                success: function (res) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+                    // 응답코드 > 0000
+                    // alert(res.code);
+                    window.location.href = "/boards/" + board;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+                    alert("통신 실패.")
+                }
+            });
+        }
+
     </script>
 
 </th:block>
 <div layout:fragment="content">
+    <input type="hidden" th:id="${_csrf.parameterName}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
     <div class="container">
         <div class="row">
         </div>
@@ -127,18 +174,22 @@
 
                                 <div class="row row-reply0 card" th:id="${item.getId()}">
                                     <div class="col-8 d-flex">
-                                        <h5 th:text="${item.writer_nickname}"></h5> <span th:text="${item.getCreate_time()}">작성시간</span>
+                                        <h5 th:text="${item.writer_nickname}"></h5> <span
+                                            th:text="${item.getCreate_time()}">작성시간</span>
                                         <div class="pull-right reply reply-icon-m cursored"
                                              th:attr="onclick='reply_show(\'' + ${item.getId()} + '\')'">
                                             <span><i class="fa fa-reply"></i> reply</span></div>
                                     </div>
                                     <div th:text="${item.getMessage()}" class="block-reply"></div>
-                                    <div class="input-group input-reply" th:id="${'reply_view'+item.getId()}" style="display: none">
+                                    <div class="input-group input-reply" th:id="${'reply_view'+item.getId()}"
+                                         style="display: none">
                                         <label th:for="${item.getId()}"></label>
-                                        <input type="text" class="form-control" th:id="${item.getId()}" placeholder="댓글 입력"
+                                        <input type="text" class="form-control" th:id="${'reply_value_'+item.getId()}"
+                                               placeholder="댓글 입력"
                                                name="reply_text">
                                         <div class="input-group-repend">
-                                            <button class="btn btn-outline-secondary" type="button">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                    th:attr="onclick='post_reply(\'' + ${board_num} + '\', \''+ ${item.getId()} + '\' )'">
                                                 전송
                                             </button>
                                         </div>
@@ -150,24 +201,11 @@
                                         <div class="media-body">
                                             <div class="row">
                                                 <div class="col-12 d-flex">
-                                                    <h5 th:text="${item_in.writer_nickname}"></h5> <span>작성시간1</span>
-                                                    <div class="pull-right reply reply-icon-m cursored"
-                                                         th:attr="onclick='reply_show(\'' + ${item_in.getId()} + '\')'">
-                                                        <span><i class="fa fa-reply"></i> reply</span>
-                                                    </div>
+                                                    <h5 th:text="${item_in.writer_nickname}"></h5> <span
+                                                        th:text="${item_in.getCreate_time}"></span>
                                                 </div>
                                             </div>
-                                            대댓글 작성내용1
-                                        </div>
-                                        <div class="input-group input-reply" style="display: none" th:id="${'reply_view'+item_in.getId()}" >
-                                            <label th:for="${'re_reply_label'+item_in.getId()}"></label>
-                                            <input type="text" class="form-control" th:id="${'re_reply_label'+item_in.getId()}" placeholder="댓글 입력"
-                                                   name="reply_text">
-                                            <div class="input-group-repend">
-                                                <button class="btn btn-outline-secondary" type="button">
-                                                    전송
-                                                </button>
-                                            </div>
+                                            <div th:text="${item_in.getMessage}"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -175,11 +213,12 @@
 
 
                             <div class="input-group input-reply" style="margin-top: 20px">
-                                <label for="reply_text999"></label>
-                                <input type="text" class="form-control" id="reply_text999" placeholder="댓글 입력"
-                                       name="reply_text">
+                                <label for="reply_text_new"></label>
+                                <input type="text" class="form-control" id="reply_text_new" placeholder="댓글 입력"
+                                       name="reply_text_new">
                                 <div class="input-group-repend">
-                                    <button class="btn btn-outline-secondary" type="button">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                            th:attr="onclick='post_reply_new(\'' + ${board_num} + '\')'">
                                         전송
                                     </button>
                                 </div>
