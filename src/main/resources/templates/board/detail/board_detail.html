@@ -5,88 +5,218 @@
       layout:decorator="~{layouts/layout}"
 >
 <!-- index.html 고유 CSS 추가 -->
-<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="css">
+    <style>
+        .block-reply {
+            margin-left: 30px;
+            width: 100%;
+            display: block;
+        }
+
+        .row-reply0 {
+            margin-top: 20px;
+        }
+
+        .input-reply {
+            margin-top: 8px;
+        }
+
+        .reply-icon-m {
+            margin-left: 30px;
+        }
+        .cursored{
+            cursor: pointer;
+        }
+    </style>
+</th:block>
 <!-- index.html 고유 스크립트 추가 -->
 <th:block layout:fragment="script">
-<!--  제이쿼리  -->
+    <!--  제이쿼리  -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<!--  추천하기  -->
     <script>
-        function giveRecommend() {
-            const id = $("#id").val();
-            const params = {
-                _csrf: $("#_csrf").val()
+        function reply_show(id) {
+            let reply_viewer = $("#reply_view"+id);
+            if ( reply_viewer.css('display') === 'none') {
+                reply_viewer.show();
+            } else {
+                reply_viewer.hide();
             }
-            $.ajax({
-                type: "POST",            // HTTP method type(GET, POST) 형식이다.
-                url: "/api/boards/" + id + "/recommend",      // 컨트롤러에서 대기중인 URL 주소이다.
-                data: params,            // Json 형식의 데이터이다.
-                success: function (res) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-                    $("#recommend").text(res.count);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
-                    alert("통신 실패.")
-                }
-            })
+
         }
-        function goWrite() {
-            location.href = "/boards/write";
-        }
+
     </script>
 
 </th:block>
 <div layout:fragment="content">
     <div class="container">
-        <input type="hidden" th:id="id" th:value="${id}"/>
-        <input type="hidden" th:id="${_csrf.parameterName}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <div class="row">
+        </div>
         <!-- /.row -->
         <!--  여기에 내용 넣기  -->
         <table class="table">
             <tbody>
             <tr>
-                <td th:text="제목" style="width: 100px"></td>
                 <td th:text="${title}"></td>
             </tr>
             <tr>
-                <td th:text="조회수"></td>
-                <td id="view_count" th:text="조회수"></td>
-            </tr>
-            <tr>
-                <td th:text="추천수"></td>
-                <td id="recommend" th:text="${recommend_count}"></td>
-            </tr>
-
-            <tr>
-                <td th:text="작성자"></td>
                 <td th:text="${writer}"></td>
             </tr>
             <tr>
-                <td th:text="메시지"></td>
                 <td th:text="${message}"></td>
             </tr>
             <tr>
-                <td th:text="내용"></td>
-                <td th:text="${contents}"></td>
+                <td th:utext="${contents}"></td>
             </tr>
-
             </tbody>
         </table>
     </div>
-    <div class="row">
-        <div class="col-md-8 align-self-center">
-        </div>
-        <div class="col">
-            <div class="col-6 col-md-4 align-self-center">
-                <button type="button" class="btn btn-dark"
-                        onclick="giveRecommend()">글 추천하기
-                </button>
-                <button type="button" class="btn btn-dark"
-                        onclick="goWrite()">글 작성하기
-                </button>
+
+    <th:block>
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap');
+
+            .reply {
+                display: grid;
+                font-family: 'Source Sans Pro', sans-serif;
+            }
+
+            .card {
+                position: relative;
+                display: flex;
+                padding: 20px;
+                flex-direction: column;
+                min-width: 0;
+                word-wrap: break-word;
+                background-color: #fff;
+                background-clip: border-box;
+                border: 1px solid #d2d2dc;
+                border-radius: 11px;
+                -webkit-box-shadow: 0 0 5px 0 rgb(249, 249, 250);
+                -moz-box-shadow: 0 0 5px 0 rgba(212, 182, 212, 1);
+                box-shadow: 0 0 5px 0 rgb(161, 163, 164)
+            }
+
+
+            .reply a {
+                text-decoration: none
+            }
+        </style>
+    </th:block>
+
+
+    <div class="container mb-5 mt-5 reply">
+        <div class="card">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="text-center"> 댓글 </h3>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="media-body" id="reply_container">
+
+
+                                <div class="row row-reply0 card">
+                                    <div class="col-8 d-flex">
+                                        <h5>댓글작성자</h5> <span>작성시간</span>
+                                        <div class="pull-right reply reply-icon-m cursored"
+                                             onclick="reply_show(0)"
+                                        ><span><i class="fa fa-reply"></i> reply</span>
+                                        </div>
+                                    </div>
+                                    <div class="block-reply">댓글내용</div>
+                                    <div class="input-group input-reply" id="reply_view0">
+                                        <label for="reply_text0"></label>
+                                        <input type="text" class="form-control" id="reply_text0" placeholder="댓글 입력"
+                                               name="reply_text">
+                                        <div class="input-group-repend">
+                                            <button class="btn btn-outline-secondary" type="button">
+                                                전송
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="media mt-4 card"><a class="pr-3" href="#"></a>
+                                        <div class="media-body">
+                                            <div class="row">
+                                                <div class="col-12 d-flex">
+                                                    <h5>대댓글 작성자1</h5> <span>작성시간1</span>
+                                                </div>
+                                            </div>
+                                            대댓글 작성내용1
+                                        </div>
+                                        <div class="input-group input-reply">
+                                            <label for="reply_text1"></label>
+                                            <input type="text" class="form-control" id="reply_text1" placeholder="댓글 입력"
+                                                   name="reply_text">
+                                            <div class="input-group-repend">
+                                                <button class="btn btn-outline-secondary" type="button">
+                                                    전송
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="media mt-3 card"><a class="pr-3" href="#"></a>
+                                        <div class="media-body">
+                                            <div class="row">
+                                                <div class="col-12 d-flex">
+                                                    <h5>대댓글 작성자2</h5> <span>작성자2</span>
+                                                </div>
+                                            </div>
+                                            대댓글 작성내용2
+                                        </div>
+                                        <div class="input-group input-reply">
+                                            <label for="reply_text2"></label>
+                                            <input type="text" class="form-control" id="reply_text2" placeholder="댓글 입력"
+                                                   name="reply_text">
+                                            <div class="input-group-repend">
+                                                <button class="btn btn-outline-secondary" type="button">
+                                                    전송
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row-reply0 card">
+                                    <div class="col-8 d-flex">
+                                        <h5>댓글작성자</h5> <span>작성시간</span>
+                                        <div class="pull-right reply"><a href="#"><span><i class="fa fa-reply"></i> reply</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="block-reply">댓글내용</div>
+                                    <div class="input-group input-reply">
+                                        <label for="reply_text"></label>
+                                        <input type="text" class="form-control" id="reply_text" placeholder="댓글 입력"
+                                               name="reply_text">
+                                        <div class="input-group-repend">
+                                            <button class="btn btn-outline-secondary" type="button">
+                                                전송
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="input-group input-reply" style="margin-top: 20px">
+                                    <label for="reply_text999"></label>
+                                    <input type="text" class="form-control" id="reply_text999" placeholder="댓글 입력"
+                                           name="reply_text">
+                                    <div class="input-group-repend">
+                                        <button class="btn btn-outline-secondary" type="button">
+                                            전송
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
+
 </html>

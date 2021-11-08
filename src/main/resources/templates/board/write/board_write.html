@@ -5,7 +5,13 @@
       layout:decorator="~{layouts/layout}"
 >
 <!-- index.html 고유 CSS 추가 -->
-<th:block layout:fragment="css"> </th:block>
+<th:block layout:fragment="css">
+    <style>
+        .note-popover{
+            display: none;
+        }
+    </style>
+</th:block>
 <!-- index.html 고유 스크립트 추가 -->
 <th:block layout:fragment="script">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -36,6 +42,16 @@
     </script>
 </th:block>
 <div layout:fragment="content">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.6/summernote.css" rel="stylesheet">
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <!-- 자바스크립트관련 -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.6/summernote.js"></script>
+    <!-- 한글관련 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.6/lang/summernote-ko-KR.min.js"></script>
     <input type="hidden" th:id="${_csrf.parameterName}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
     <div class="container">
         <div class="row">
@@ -59,5 +75,17 @@
         </div>
         <button class="btn btn-primary" th:onclick="ajax_board_post()">작성</button>
     </div>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#contents').summernote({
+                lang: 'ko-KR',
+                height: 300,
+            });
+
+
+        });
+    </script>
 </div>
 </html>
