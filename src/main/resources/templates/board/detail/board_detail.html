@@ -104,125 +104,128 @@
 <div layout:fragment="content">
     <input type="hidden" th:id="${_csrf.parameterName}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-    <div class="col-sm-8">
-        <div class="container">
-            <div class="row">
-            </div>
-            <!-- /.row -->
-            <!--  여기에 내용 넣기  -->
-            <table class="table">
-                <tbody>
-                <tr>
-                    <td th:text="${title}"></td>
-                </tr>
-                <tr>
-                    <td th:text="${writer}"></td>
-                </tr>
-                <tr>
-                    <td th:text="${message}"></td>
-                </tr>
-                <tr>
-                    <td th:utext="${contents}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <th:block>
-            <link rel="stylesheet"
-                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-            <style>
-                @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap');
-
-                .reply {
-                    display: grid;
-                    font-family: 'Source Sans Pro', sans-serif;
-                }
-
-                .card {
-                    position: relative;
-                    display: flex;
-                    padding: 20px;
-                    flex-direction: column;
-                    min-width: 0;
-                    word-wrap: break-word;
-                    background-color: #fff;
-                    background-clip: border-box;
-                    border: 1px solid #d2d2dc;
-                    border-radius: 11px;
-                    -webkit-box-shadow: 0 0 5px 0 rgb(249, 249, 250);
-                    -moz-box-shadow: 0 0 5px 0 rgba(212, 182, 212, 1);
-                    box-shadow: 0 0 5px 0 rgb(161, 163, 164)
-                }
-
-
-                .reply a {
-                    text-decoration: none
-                }
-            </style>
-        </th:block>
-
-
-        <div class="container mb-5 mt-5 reply">
-            <div class="card">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="text-center"> 댓글 </h3>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div th:each="item, num : ${replys}"
-                                     class="media-body" id="reply_container">
+                </div>
+                <!-- /.row -->
+                <!--  여기에 내용 넣기  -->
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td th:text="${title}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${writer}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${message}"></td>
+                    </tr>
+                    <tr>
+                        <td th:utext="${contents}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                                    <div class="row row-reply0 card" th:id="${item.getId()}">
-                                        <div class="col-8 d-flex">
-                                            <h5 th:text="${item.writer_nickname}"></h5> <span
-                                                th:text="${item.getCreate_time()}">작성시간</span>
-                                            <div class="pull-right reply reply-icon-m cursored"
-                                                 th:attr="onclick='reply_show(\'' + ${item.getId()} + '\')'">
-                                                <span><i class="fa fa-reply"></i> reply</span></div>
-                                        </div>
-                                        <div th:text="${item.getMessage()}" class="block-reply"></div>
-                                        <div class="input-group input-reply" th:id="${'reply_view'+item.getId()}"
-                                             style="display: none">
-                                            <label th:for="${item.getId()}"></label>
-                                            <input type="text" class="form-control"
-                                                   th:id="${'reply_value_'+item.getId()}"
-                                                   placeholder="댓글 입력"
-                                                   name="reply_text">
-                                            <div class="input-group-repend">
-                                                <button class="btn btn-outline-secondary" type="button"
-                                                        th:attr="onclick='post_reply(\'' + ${board_num} + '\', \''+ ${item.getId()} + '\' )'">
-                                                    전송
-                                                </button>
+            <th:block>
+                <link rel="stylesheet"
+                      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap');
+
+                    .reply {
+                        display: grid;
+                        font-family: 'Source Sans Pro', sans-serif;
+                    }
+
+                    .card {
+                        position: relative;
+                        display: flex;
+                        padding: 20px;
+                        flex-direction: column;
+                        min-width: 0;
+                        word-wrap: break-word;
+                        background-color: #fff;
+                        background-clip: border-box;
+                        border: 1px solid #d2d2dc;
+                        border-radius: 11px;
+                        -webkit-box-shadow: 0 0 5px 0 rgb(249, 249, 250);
+                        -moz-box-shadow: 0 0 5px 0 rgba(212, 182, 212, 1);
+                        box-shadow: 0 0 5px 0 rgb(161, 163, 164)
+                    }
+
+
+                    .reply a {
+                        text-decoration: none
+                    }
+                </style>
+            </th:block>
+
+
+            <div class="container mb-5 mt-5 reply">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="text-center"> 댓글 </h3>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div th:each="item, num : ${replys}"
+                                         class="media-body" id="reply_container">
+
+                                        <div class="row row-reply0 card" th:id="${item.getId()}">
+                                            <div class="col-8 d-flex">
+                                                <h5 th:text="${item.writer_nickname}"></h5> <span
+                                                    th:text="${item.getCreate_time()}">작성시간</span>
+                                                <div class="pull-right reply reply-icon-m cursored"
+                                                     th:attr="onclick='reply_show(\'' + ${item.getId()} + '\')'">
+                                                    <span><i class="fa fa-reply"></i> reply</span></div>
                                             </div>
-                                        </div>
-
-
-                                        <div th:each="item_in, num_in : ${item.getRe_reply()}" class="media mt-4 card">
-                                            <a class="pr-3" href="#"></a>
-                                            <div class="media-body">
-                                                <div class="row">
-                                                    <div class="col-12 d-flex">
-                                                        <h5 th:text="${item_in.writer_nickname}"></h5> <span
-                                                            th:text="${item_in.getCreate_time}"></span>
-                                                    </div>
+                                            <div th:text="${item.getMessage()}" class="block-reply"></div>
+                                            <div class="input-group input-reply" th:id="${'reply_view'+item.getId()}"
+                                                 style="display: none">
+                                                <label th:for="${item.getId()}"></label>
+                                                <input type="text" class="form-control"
+                                                       th:id="${'reply_value_'+item.getId()}"
+                                                       placeholder="댓글 입력"
+                                                       name="reply_text">
+                                                <div class="input-group-repend">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            th:attr="onclick='post_reply(\'' + ${board_num} + '\', \''+ ${item.getId()} + '\' )'">
+                                                        전송
+                                                    </button>
                                                 </div>
-                                                <div th:text="${item_in.getMessage()}"></div>
+                                            </div>
+
+
+                                            <div th:each="item_in, num_in : ${item.getRe_reply()}"
+                                                 class="media mt-4 card">
+                                                <a class="pr-3" href="#"></a>
+                                                <div class="media-body">
+                                                    <div class="row">
+                                                        <div class="col-12 d-flex">
+                                                            <h5 th:text="${item_in.writer_nickname}"></h5> <span
+                                                                th:text="${item_in.getCreate_time}"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div th:text="${item_in.getMessage()}"></div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
 
-                                <div class="input-group input-reply" style="margin-top: 20px">
-                                    <label for="reply_text_new"></label>
-                                    <input type="text" class="form-control" id="reply_text_new" placeholder="댓글 입력"
-                                           name="reply_text_new">
-                                    <div class="input-group-repend">
-                                        <button class="btn btn-outline-secondary" type="button"
-                                                th:attr="onclick='post_reply_new(\'' + ${board_num} + '\')'">
-                                            전송
-                                        </button>
+                                    <div class="input-group input-reply" style="margin-top: 20px">
+                                        <label for="reply_text_new"></label>
+                                        <input type="text" class="form-control" id="reply_text_new" placeholder="댓글 입력"
+                                               name="reply_text_new">
+                                        <div class="input-group-repend">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                    th:attr="onclick='post_reply_new(\'' + ${board_num} + '\')'">
+                                                전송
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -328,7 +331,8 @@
                                 <div class="image"><img src="https://i.imgur.com/jhsYqVT.png" width="70"> <span
                                         class="type"><img src="https://i.imgur.com/4lg6mOg.png" width="20"></span>
                                 </div>
-                                <div class="d-flex flex-column line-height ml-2"><span class="font-weight-bold">hannahdat21</span>
+                                <div class="d-flex flex-column line-height ml-2"><span
+                                        class="font-weight-bold">hannahdat21</span>
                                     <span>Can i order online?</span> <span
                                             class="d-flex flex-row align-items-center l-now"><small
                                             class="live"></small>Live now</span></div>
@@ -340,7 +344,8 @@
                                 <div class="image"><img src="https://i.imgur.com/vxEWOFl.png" width="70"> <span
                                         class="type"><img src="https://i.imgur.com/CngJIFw.png" width="20"></span>
                                 </div>
-                                <div class="d-flex flex-column line-height ml-2"><span class="font-weight-bold">hannahdat21</span>
+                                <div class="d-flex flex-column line-height ml-2"><span
+                                        class="font-weight-bold">hannahdat21</span>
                                     <span>Is this still available?</span> <span
                                             class="d-flex flex-row align-items-center l-now"><small
                                             class="live"></small>Live now</span></div>
@@ -352,7 +357,8 @@
                                 <div class="image"><img src="https://i.imgur.com/jhsYqVT.png" width="70"> <span
                                         class="type"><img src="https://i.imgur.com/4lg6mOg.png" width="20"></span>
                                 </div>
-                                <div class="d-flex flex-column line-height ml-2"><span class="font-weight-bold">hannahdat21</span>
+                                <div class="d-flex flex-column line-height ml-2"><span
+                                        class="font-weight-bold">hannahdat21</span>
                                     <span>Thanks hannah!</span> <span
                                             class="d-flex flex-row align-items-center l-now"><small
                                             class="live"></small>Live now</span></div>
