@@ -1,100 +1,69 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
 >
-<th:block th:replace="~{/layouts/basic :: setContent(~{this :: content})}">
-    <th:block th:fragment="content">
-        <div class="container">
-            <div class="col-6">
-                <label><b>채팅방</b></label>
-            </div>
-            <div id="msgArea" class="col"></div>
-            <div class="col-6">
-                <div class="input-group mb-3">
-                    <input type="text" id="msg" class="form-control" aria-label="Recipient`s username"
-                           aria-describedby="button-addon2">
-                    <div class="input-group-append">
-                        <button class="btn-outline-secondary" type="button" id="button-send">전송</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<head>
+    <meta charset="UTF-8">
+    <title>채팅 서비스</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
-        <span hidden sec:authentication="name" class="read" id="user"></span>
-    </th:block>
+    <!-- 부가적인 테마 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+<button class = "btn btn-primary" id = "start">입장하기</button>
+<div id = "chatroom" style = "width:400px; height: 600px; border:1px solid; background-color : gray"></div>
+<input type = "text" id = "message" style = "height : 30px; width : 340px" placeholder="내용을 입력하세요" autofocus>
+<button class = "btn btn-primary" id = "send">전송</button>
+
+<th:block th:fragment = "content">
+    <span hidden sec:authentication="name" class="read" id="user"></span>
 </th:block>
 
 
+</body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script th:inline="javascript">
-    $(document).ready(function () {
+    var webSocket
+    const nickname = $("#user").text();
+    document.getElementById("start").addEventListener("click", function(){
+        document.getElementById("start").style.display="none";
+        connect();
+    })
+    document.getElementById("send").addEventListener("click",function(){
+        send();
+    })
+    function connect(){
+        webSocket = new WebSocket("ws://localhost:80/chat");
+        webSocket.onopen = onOpen;
+        webSocket.onclose = onClose;
+        webSocket.onmessage = onMessage;
+    }
+    function disconnect(){
+        webSocket.send(nickname + "님이 퇴장하셨습니다");
+        webSocket.close();
+    }
+    function send(){
+        msg = document.getElementById("message").value;
+        webSocket.send(nickname + " : " + msg);
+        document.getElementById("message").value = "";
+    }
+    function onOpen(){
+        webSocket.send(nickname + "님이 입장하셨습니다.");
+    }
+    function onMessage(e){
+        data = e.data;
+        chatroom = document.getElementById("chatroom");
+        chatroom.innerHTML = chatroom.innerHTML + "<br>" + data;
+    }
+    function onClose(){
 
-        const username = $("#user").text();
-
-        $("#disconn").on("click", () => {
-            // disconnect();
-            console.log("disconnct() = null");
-        });
-        $("#button-send").on("click", () => {
-            send();
-        });
-
-        const websocket = new WebSocket("ws://localhost/chat");
-        websocket.onmessage = onMessage;
-        websocket.onopen = onOpen;
-        websocket.onclose = onClose;
-
-        function send() {
-            let msg = document.getElementById("msg");
-            console.log(username + ":" + msg.value);
-            websocket.send(username + ":" + msg.value);
-            msg.value = '';
-        }
-
-        function onClose() {
-            let str = username + ": 님이 방을 나가셨습니다";
-            websocket.send(str);
-        }
-
-        function onOpen() {
-            let str = username + ": 님이 방에 입장하셨습니다";
-            websocket.send(str);
-        }
-
-        function onMessage(msg) {
-            let data = msg.data;
-            let message;
-            let arr = data.split(":");
-            let sessiopnId = arr[0];
-
-            for (let i = 0; i < arr.length; i++) {
-                console.log('arr[' + i + ']' + arr[i]);
-            }
-            let cur_session = username;
-
-            console.log("cur_session:" + cur_session);
-
-            message = arr[1];
-            console.log(arr)
-            console.log("sessionId:" + sessiopnId);
-            console.log("cur_session:" + cur_session);
-            if (sessiopnId === cur_session) {
-                let str = "<div class='col-6'>";
-                str += "<div class='alert alert-secondary'>";
-                str += "<b>" + sessiopnId + ":" + message + "</b>";
-                str += "</div></div>";
-                $("#msgArea").append(str);
-            } else {
-                let str = "<div class='col-6'>";
-                str += "<div class='alert alert-warning'>";
-                str += "<b>" + sessiopnId + ":" + message + "</b>";
-                str += "</div></div>";
-                $("#msgArea").append(str);
-            }
-
-        }
-
-    });
+    }
 </script>
 </html>

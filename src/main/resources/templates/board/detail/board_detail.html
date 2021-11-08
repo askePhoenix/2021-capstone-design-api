@@ -54,7 +54,7 @@
         }
 
         function post_reply(board, target) {
-            const message = "#reply_value_" + board;
+            const message = "#reply_value_" + target;
             const params = {
                 message: $(message).val()
                 , target_reply_id: target
@@ -205,7 +205,7 @@
                                                         th:text="${item_in.getCreate_time}"></span>
                                                 </div>
                                             </div>
-                                            <div th:text="${item_in.getMessage}"></div>
+                                            <div th:text="${item_in.getMessage()}"></div>
                                         </div>
                                     </div>
                                 </div>
