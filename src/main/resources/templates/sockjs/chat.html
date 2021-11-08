@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+</head>
+
+<th:block >
+    <th:block th:fragment = "content">
+        <div class="container">
+            <div class="col-6">
+                <label><b>채팅방</b></label>
+            </div>
+            <div id="msgArea" class="col"></div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <input type="text" id="msg" class="form-control" aria-label="Recipient`s username" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn-outline-secondary" type="button" id="button-send">전송</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <span hidden sec:authentication="name" class="read" id="user"></span>
+    </th:block>
+</th:block>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function (){
+
+        const username = $("#user").text();
+
+        $("#disconn").on("click",(e)=>{
+            disconnect();
+        });
+        $("#button-send").on("click",(e)=>{
+            send();
+        });
+
+
+        const websocket = new SockJS("http://localhost:8080/sockjs");
+        //const websocket = new SockJS("sockjs",null,{transports:["websocket","xhr-streaming","xhr-polling"]});
+        websocket.onmessage = onMessage;
+        websocket.onopen = onOpen;
+      /*  websocket.onclose = function (e){
+            onClose();
+        };*/
+        //윈도우창을 나갈때 이벤트 ㅠㅠㅠㅠㅠ드디어 찾음
+        window.onbeforeunload = onClose;
+
+        function send(){
+            let msg = document.getElementById("msg");
+            console.log(username + ":" + msg.value);
+            websocket.send(username + ":" + msg.value);
+            msg.value = '';
+            if(msg.value==null){
+                onClose();
+            }
+        }
+        function onClose(){
+
+            var str = username + ": 님이 방을 나가셨습니다";
+            websocket.send(str);
+
+        }
+
+        function onOpen(evt){
+            var str =  username +':방에 입장하셨습니다';
+            websocket.send(str);
+
+        }
+
+        function onMessage(msg){
+            var data =  msg.data;
+            var message = null;
+            var arr = data.split(":");
+            var sessiopnId = arr[0];
+
+            for (var i = 0; i < arr.length; i++) {
+                console.log('arr['+i+']'+arr[i]);
+            }
+            var cur_session = username;
+
+            console.log("cur_session:" + cur_session);
+
+            message = arr[1];
+            console.log(arr)
+            console.log("sessionId:" + sessiopnId);
+            console.log("cur_session:" + cur_session);
+            if (sessiopnId == cur_session) {
+                var str = "<div class='col-6'>";
+                str += "<div class='alert alert-secondary'>";
+                str += "<b>"+"나:"+message+"</b>";
+                str += "</div></div>";
+                $("#msgArea").append(str);
+            }else{
+                var str = "<div class='col-6'>";
+                str += "<div class='alert alert-warning'>";
+                str += "<b>"+sessiopnId+":"+message+"</b>";
+                str += "</div></div>";
+                $("#msgArea").append(str);
+            }
+
+        }
+
+    });
+</script>
+</html>

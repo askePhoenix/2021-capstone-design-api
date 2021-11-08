@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
->
-<head>
+><head>
     <meta charset="UTF-8">
     <title>채팅 서비스</title>
     <!-- Bootstrap core CSS -->
@@ -10,60 +9,69 @@
     <!-- 부가적인 테마 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<!--
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
+-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 </head>
 <body>
-<button class = "btn btn-primary" id = "start">입장하기</button>
+<span hidden sec:authentication="name" class="read" id="user"></span>
+<label for="roomName" class="label label-default">방 이름</label>
+<label th:text="*{room.name}" id="roomName" class="form-inline"></label>
 <div id = "chatroom" style = "width:400px; height: 600px; border:1px solid; background-color : gray"></div>
 <input type = "text" id = "message" style = "height : 30px; width : 340px" placeholder="내용을 입력하세요" autofocus>
 <button class = "btn btn-primary" id = "send">전송</button>
+<script>
 
-<th:block th:fragment = "content">
-    <span hidden sec:authentication="name" class="read" id="user"></span>
-</th:block>
-
-
+</script>
 </body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script th:inline="javascript">
-    var webSocket
+<script th:inline = "javascript">
+
+
+/*     <![CDATA[*/
+    var roomId = [[${room.roomId}]];
+ /*    ]]>*/
+/*    connect();*/
     const nickname = $("#user").text();
-    document.getElementById("start").addEventListener("click", function(){
-        document.getElementById("start").style.display="none";
-        connect();
-    })
+
     document.getElementById("send").addEventListener("click",function(){
         send();
     })
-    function connect(){
-        webSocket = new WebSocket("ws://localhost:8080/chat");
+
+        const webSocket = new SockJS("http://localhost:8080/chat");
+
+        connect();
+
+        function connect() {
         webSocket.onopen = onOpen;
-        webSocket.onclose = onClose;
         webSocket.onmessage = onMessage;
+        window.onbeforeunload = onClose;
     }
-    function disconnect(){
-        webSocket.send(nickname + "님이 퇴장하셨습니다");
-        webSocket.close();
+
+
+    function onClose(){
+        webSocket.send(JSON.stringify({roomId : roomId,type:'LEAVE',writer:nickname}));
     }
+
     function send(){
         msg = document.getElementById("message").value;
-        webSocket.send(nickname + " : " + msg);
+        webSocket.send(JSON.stringify({roomId : roomId,type:'CHAT',writer:nickname,message : msg}));
         document.getElementById("message").value = "";
     }
     function onOpen(){
-        webSocket.send(nickname + "님이 입장하셨습니다.");
+        webSocket.send(JSON.stringify({roomId:roomId,type:'ENTER',writer:nickname}));
     }
+
     function onMessage(e){
         data = e.data;
         chatroom = document.getElementById("chatroom");
         chatroom.innerHTML = chatroom.innerHTML + "<br>" + data;
     }
-    function onClose(){
 
-    }
+
 </script>
 </html>
