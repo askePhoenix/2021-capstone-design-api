@@ -40,7 +40,7 @@
         send();
     })
     function connect(){
-        webSocket = new WebSocket("ws://localhost:8080/chat");
+        webSocket = new WebSocket("ws://localhost:80/chat");
         webSocket.onopen = onOpen;
         webSocket.onclose = onClose;
         webSocket.onmessage = onMessage;

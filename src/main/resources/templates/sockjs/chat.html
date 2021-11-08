@@ -43,7 +43,7 @@
         });
 
 
-        const websocket = new SockJS("http://localhost:8080/sockjs");
+        const websocket = new SockJS("http://localhost:80/sockjs");
         //const websocket = new SockJS("sockjs",null,{transports:["websocket","xhr-streaming","xhr-polling"]});
         websocket.onmessage = onMessage;
         websocket.onopen = onOpen;

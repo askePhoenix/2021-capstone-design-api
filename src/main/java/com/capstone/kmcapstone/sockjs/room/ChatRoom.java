@@ -27,10 +27,10 @@ public class ChatRoom {
     public void handleActions(WebSocketSession session, ChatMessage chatMessage , ChatService chatService) {
         if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
             sessions.add(session);
-            chatMessage.setMessage(chatMessage.getWriter() + " : 님이 입장했습니다 ");
+            chatMessage.setMessage(chatMessage.getWriter() + " : 님이 입장했습니다 현재인원:"+sessions.size());
         } else if (chatMessage.getType().equals(ChatMessage.MessageType.LEAVE)) {
-            chatMessage.setMessage(chatMessage.getWriter() + " : 님이 방을나갔습니다");
             leave(session);
+            chatMessage.setMessage(chatMessage.getWriter() + " : 님이 방을나갔습니다 현재인원:"+sessions.size());
         } else {
             chatMessage.setMessage(chatMessage.getWriter() + ":" + chatMessage.getMessage());
         }

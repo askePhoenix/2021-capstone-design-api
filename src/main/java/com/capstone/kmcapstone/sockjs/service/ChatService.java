@@ -35,7 +35,10 @@ public class ChatService {
     }
 
     public List<ChatRoom> findAllRoom() {
-        return new ArrayList<>(chatRooms.values());
+        List<ChatRoom> rooms = new ArrayList<>(chatRooms.values());
+        Collections.reverse(rooms);
+        return rooms;
+
     }
 
     public ChatRoom findRoomById(String roomId) {
@@ -57,6 +60,14 @@ public class ChatService {
 
         return chatRoom;
     }
+
+    public void dropRoom(ChatRoom chatRoom) {
+        if(chatRooms.containsKey(chatRoom.getRoomId())){
+            chatRooms.remove(chatRoom.getRoomId());
+        }
+
+    }
+
 
     public void leave(WebSocketSession session) {
         chatRooms.forEach((key , val)->{
