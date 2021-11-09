@@ -18,6 +18,7 @@ public class ChatMessage {
     private RoomType roomType;//면접자와 면접관을 나누기 위해서
     private MessageType type;
     private String roomId;//방 아이디
+    private String roomName;
     private String writer;//보낸이
     private String message;//메세지
 

@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -39,6 +40,17 @@ public class ChatService {
         Collections.reverse(rooms);
         return rooms;
 
+    }
+
+    public ChatRoom findRoomBySession(WebSocketSession session) {
+        List<ChatRoom> list = chatRooms.values().stream().toList();
+        ChatRoom findRoom = null;
+        for(ChatRoom chatRoom : list){
+            if(chatRoom.getSessions().contains(session)){
+                findRoom = chatRoom;
+            }
+        }
+        return findRoom;
     }
 
     public ChatRoom findRoomById(String roomId) {
