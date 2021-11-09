@@ -15,7 +15,7 @@ public class ChatRoom {
     private String roomId;
     private String name;
     private Set<WebSocketSession> sessions = new HashSet<>();
-
+    private int count = sessions.size();
 
 
     @Builder
@@ -27,10 +27,12 @@ public class ChatRoom {
     public void handleActions(WebSocketSession session, ChatMessage chatMessage , ChatService chatService) {
         if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
             sessions.add(session);
-            chatMessage.setMessage(chatMessage.getWriter() + " : 님이 입장했습니다 현재인원:"+sessions.size());
+            count = sessions.size();
+            chatMessage.setMessage(chatMessage.getWriter() + " : 님이 입장했습니다 현재인원:"+count);
         } else if (chatMessage.getType().equals(ChatMessage.MessageType.LEAVE)) {
             leave(session);
-            chatMessage.setMessage(chatMessage.getWriter() + " : 님이 방을나갔습니다 현재인원:"+sessions.size());
+            count = sessions.size();
+            chatMessage.setMessage(chatMessage.getWriter() + " : 님이 방을나갔습니다 현재인원:"+count);
         } else {
             chatMessage.setMessage(chatMessage.getWriter() + ":" + chatMessage.getMessage());
         }

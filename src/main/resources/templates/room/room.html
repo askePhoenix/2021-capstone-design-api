@@ -34,6 +34,7 @@
 
 /*     <![CDATA[*/
     var roomId = [[${room.roomId}]];
+    var roomName = [[${room.name}]];
  /*    ]]>*/
 /*    connect();*/
     const nickname = $("#user").text();
@@ -54,16 +55,16 @@
 
 
     function onClose(){
-        webSocket.send(JSON.stringify({roomId : roomId,type:'LEAVE',writer:nickname}));
+        webSocket.send(JSON.stringify({roomId : roomId,type:'LEAVE',writer:nickname,roomName:roomName}));
     }
 
     function send(){
         msg = document.getElementById("message").value;
-        webSocket.send(JSON.stringify({roomId : roomId,type:'CHAT',writer:nickname,message : msg}));
+        webSocket.send(JSON.stringify({roomId : roomId,type:'CHAT',writer:nickname,message : msg,roomName:roomName}));
         document.getElementById("message").value = "";
     }
     function onOpen(){
-        webSocket.send(JSON.stringify({roomId:roomId,type:'ENTER',writer:nickname}));
+        webSocket.send(JSON.stringify({roomId:roomId,type:'ENTER',writer:nickname,roomName:roomName}));
     }
 
     function onMessage(e){
