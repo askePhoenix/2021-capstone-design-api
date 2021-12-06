@@ -14,7 +14,7 @@
     <h1 class="mt-5">회원 전용 페이지</h1>
     닉네임 : <span th:text="${nick_name}" class="read"></span> <br>
     ID : <span sec:authentication="name" class="read"></span> <br>
-    소유 권한 : <span sec:authentication="authorities" class="read"></span> <br>
+    <!--소유 권한 : <span sec:authentication="authorities" class="read"></span> <br>-->
 
     <form id="logout" th:action="@{/logout}" method="POST">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
