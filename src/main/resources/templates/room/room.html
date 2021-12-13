@@ -19,12 +19,14 @@
 
 </head>
 <body>
+
 <span hidden sec:authentication="name" class="read" id="user"></span>
 <label for="roomName" class="label label-default">방 이름</label>
 <label th:text="*{room.name}" id="roomName" class="form-inline"></label>
 <div id = "chatroom" style = "width:400px; height: 600px; border:1px solid; background-color : white"></div>
 <input type = "text" id = "message" style = "height : 30px; width : 340px" placeholder="내용을 입력하세요" autofocus>
 <button class = "btn btn-primary" id = "send">전송</button>
+<button class = "btn btn-danger" href = "/room">나가기</button>
 <script>
 
 </script>
